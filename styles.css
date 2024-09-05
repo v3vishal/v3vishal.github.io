@@ -1,0 +1,22 @@
+body {
+    background: rgb(0,0,0);
+    background: linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(0,0,121,1) 31%, rgba(14,14,210,1) 59%, rgba(0,212,255,1) 100%);
+}
+.n {
+    font-family: SUSE;
+    font-weight: 600;
+    font-size: 50px;
+    color:whitesmoke;
+    padding-left: 20px;
+    padding: auto;
+}
+.ncap {
+    font-size: 35px;
+    font-weight: 400;
+    font-family: SUSE;
+    color:whitesmoke;
+    padding-left: 20px;
+    padding-top: -25px;
+    padding-bottom: 20px;
+    padding: auto;
+}
