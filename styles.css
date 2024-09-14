@@ -1,3 +1,9 @@
+*{
+    margin: 0%;
+    padding: 0%;
+    overflow: hidden;
+}
+
 body {
     background: rgb(0,0,0);
     background: linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(0,0,121,1) 31%, rgba(14,14,210,1) 59%, rgba(0,212,255,1) 100%);
