@@ -32,10 +32,48 @@
     height: 100%;
     z-index: -1; 
   }
+
+  @keyframes rotate {
+    from {
+      rotate: 0deg;
+    }
+    
+    50% {
+      scale: 1 1;
+    }
+    
+    to {
+      rotate: 360deg;
+    }
+  }
+  
+  #blob {
+    background-color: white;
+    height: 5vmax;
+    aspect-ratio: 1;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: linear-gradient(to right, blue, mediumpurple);
+    animation: rotate 20s infinite;
+    opacity: 0.8;
+    z-index: -3;
+  }
+  
+  #blur {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    z-index: -2;
+    backdrop-filter: blur(1vmax);
+  }
+
   h1 {
     font-family: 'SUSE', monospace;
     font-weight: 600;
-    font-size: clamp(3rem, 10vw, 10rem);
+    font-size: clamp(2rem, 8vw, 8rem);
     color: white;
     padding: 0rem clamp(0.5rem, 1vw, 1.5rem);
     border-radius: clamp(0.4rem, 0.75vw, 1rem);
@@ -45,17 +83,29 @@
   h2 {
     font-family: 'SUSE', monospace;
     font-weight: 500;
-    font-size: clamp(2rem, 8vw, 8rem);
+    font-size: clamp(1.5rem, 6vw, 6rem);
     color: white;
     padding: 0rem clamp(0.5rem, 1vw, 1.5rem);
     border-radius: clamp(0.4rem, 0.75vw, 1rem);
     margin: 0;
     display: inline;
   }
-  
-  h1:hover, h2:hover {
+  .abm {
+    color: white;
+    font-size: clamp(1rem, 5vw, 5rem);
+    font-family: SUSE, monospace;
+    padding: 0.5rem clamp(1rem, 4vw, 4rem);
+    border-radius: clamp(0.5rem, 0.75vw, 1rem);
+    margin: 3%
+  }
+  .abmh {
+    padding: 0.25rem clamp(0.5rem, 4vw, 4rem);
+    margin: 3%;
+  }
+  h1:hover, h2:hover, p:hover {
     background-color: white;
     color: black;
+    transition: color 0.3s ease;
   }
   a {
     color: transparent;

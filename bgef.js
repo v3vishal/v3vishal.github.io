@@ -18,7 +18,19 @@ window.onload = function() {
   });
 };
 
-ghl.style.height = `${h2.offsetHeight - 15}px`
+
+const blob = document.getElementById("blob");
+
+window.onpointermove = event => { 
+  const { clientX, clientY } = event;
+  
+  blob.animate({
+    left: `${clientX}px`,
+    top: `${clientY}px`
+  }, { duration: 1000, fill: "forwards" });
+}
+
+ghl.style.height = `${h2.offsetHeight - 10}px`
 
 h1.onmouseover = event => {  
   let iteration = 0;
