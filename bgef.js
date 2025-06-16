@@ -27,7 +27,7 @@ window.onpointermove = event => {
   blob.animate({
     left: `${clientX}px`,
     top: `${clientY}px`
-  }, { duration: 1000, fill: "forwards" });
+  }, { duration: 100, fill: "forwards" });
 }
 
 ghl.style.height = `${h2.offsetHeight - 10}px`
