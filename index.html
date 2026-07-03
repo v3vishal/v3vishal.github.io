@@ -3,369 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vishal V V - Aspiring Cybersecurity & ML Student</title>
+    <title>Vishal V V — Security &amp; Applied AI</title>
+    <meta name="description" content="Vishal V V — computer-science student working across cybersecurity and applied AI. Projects in ML forecasting, personal finance, and security tooling.">
+    <link rel="canonical" href="https://v3x.is-a.dev/">
+    <meta name="theme-color" content="#f7f8f7">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://v3x.is-a.dev/">
+    <meta property="og:title" content="Vishal V V — Security &amp; Applied AI">
+    <meta property="og:description" content="Computer-science student working two tracks: cybersecurity and applied AI. Agents that talk, models that predict, tools that defend.">
+    <meta name="twitter:card" content="summary">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Vishal V V",
+        "url": "https://v3x.is-a.dev/",
+        "email": "mailto:vcubegalaxy@gmail.com",
+        "sameAs": [
+            "https://github.com/v3vishal",
+            "https://linkedin.com/in/v3-vishal"
+        ],
+        "jobTitle": "Computer-science student",
+        "knowsAbout": ["Cybersecurity", "Machine Learning", "AI Agents", "Python"]
+    }
+    </script>
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23f7f8f7'/%3E%3Cpath d='M7 21 C 14 21 15 11 25 11' stroke='%232b49c8' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3Cpath d='M7 11 C 14 11 15 21 25 21' stroke='%230f6b53' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+
+    <script>
+        // Set theme before first paint to avoid a flash of the wrong mode.
+        (function () {
+            try {
+                var t = localStorage.getItem('theme');
+                if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            } catch (e) { /* storage unavailable — media query fallback in CSS applies */ }
+        })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fragment+Mono&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <header>
-        <nav>
-            <a href="#home" class="logo" aria-label="Navigate to homepage">
-                <span class="logo-text">v3x.is-a.dev</span>
-                <div class="logo-cursor">_</div>
-            </a>
-            
-            <!-- Desktop Navigation Links -->
-            <ul class="nav-links desktop-only" role="menubar">
-                <li role="none"><a href="#about" role="menuitem">About</a></li>
-                <li role="none"><a href="#projects" role="menuitem">Projects</a></li>
-                <li role="none"><a href="#skills" role="menuitem">Skills</a></li>
-                <li role="none"><a href="#contact" role="menuitem">Contact</a></li>
-            </ul>
-            
-            <!-- Single Accessibility Icon Button for Desktop -->
-            <button id="accessibilityToggle" class="accessibility-btn desktop-only" aria-label="Toggle accessibility options">
-                ♿
-            </button>
-            
-            <!-- Accessibility Panel for Desktop -->
-            <div id="accessibilityPanel" class="accessibility-panel desktop-only" role="dialog" aria-labelledby="accessibilityTitle" aria-hidden="true">
-                <h3 id="accessibilityTitle">Accessibility Options</h3>
-                <div class="accessibility-options">
-                    <button id="highContrastToggle" class="option-btn" aria-pressed="false">
-                        <span class="option-icon">🌓</span>
-                        <span>High Contrast</span>
-                    </button>
-                    <button id="largeTextToggle" class="option-btn" aria-pressed="false">
-                        <span class="option-icon">🔍</span>
-                        <span>Large Text</span>
-                    </button>
-                    <button id="reducedMotionToggle" class="option-btn" aria-pressed="false">
-                        <span class="option-icon">⏸️</span>
-                        <span>Reduce Motion</span>
-                    </button>
-                </div>
-            </div>
+<body data-station="home">
 
-            <!-- Mobile Menu Toggle -->
-            <button class="mobile-menu-toggle mobile-only" aria-label="Toggle navigation menu" aria-expanded="false">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            </button>
-            
-            <!-- Mobile Navigation Container -->
-            <div class="nav-container mobile-only" id="navContainer">
-                <ul class="nav-links" id="navLinks" role="menubar">
-                    <li role="none"><a href="#about" role="menuitem">About</a></li>
-                    <li role="none"><a href="#projects" role="menuitem">Projects</a></li>
-                    <li role="none"><a href="#skills" role="menuitem">Skills</a></li>
-                    <li role="none"><a href="#contact" role="menuitem">Contact</a></li>
-                </ul>
-                
-                <!-- Mobile Accessibility Section -->
-                <div class="mobile-accessibility-section">
-                    <h4>Accessibility Options</h4>
-                    <div class="mobile-accessibility-options">
-                        <button id="mobileHighContrastToggle" class="mobile-option-btn" aria-pressed="false">
-                            <span class="option-icon">🌓</span>
-                            <span>High Contrast</span>
-                        </button>
-                        <button id="mobileLargeTextToggle" class="mobile-option-btn" aria-pressed="false">
-                            <span class="option-icon">🔍</span>
-                            <span>Large Text</span>
-                        </button>
-                        <button id="mobileReducedMotionToggle" class="mobile-option-btn" aria-pressed="false">
-                            <span class="option-icon">⏸️</span>
-                            <span>Reduce Motion</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <div class="ambient" aria-hidden="true"></div>
+
+    <header class="site-header">
+        <a class="wordmark" href="/" aria-label="Vishal V V — home">
+            <svg class="mark" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true">
+                <path class="mark__ai"  d="M2 3 C 9 3, 10 13, 22 13"/>
+                <path class="mark__sec-halo" d="M2 13 C 9 13, 10 3, 22 3"/>
+                <path class="mark__sec" d="M2 13 C 9 13, 10 3, 22 3"/>
+            </svg>
+            Vishal&nbsp;V&nbsp;V
+        </a>
+        <nav class="site-nav" aria-label="Sections">
+            <a href="#projects">Projects</a>
+            <a href="/blog/">Writeups</a>
+            <a href="#contact">Contact</a>
         </nav>
+        <button id="mapToggle" class="map-toggle" type="button" aria-label="Open site map" aria-expanded="false" aria-controls="sitemap">
+            <svg class="mark" viewBox="0 0 24 16" width="20" height="13" aria-hidden="true">
+                <path class="mark__ai"  d="M2 3 C 9 3, 10 13, 22 13"/>
+                <path class="mark__sec-halo" d="M2 13 C 9 13, 10 3, 22 3"/>
+                <path class="mark__sec" d="M2 13 C 9 13, 10 3, 22 3"/>
+            </svg>
+            <span class="map-toggle__label">Map</span>
+        </button>
+        <button id="termToggle" class="term-toggle" type="button" aria-label="Open terminal" aria-expanded="false" aria-controls="terminal"><span aria-hidden="true">&gt;_</span></button>
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to dark theme">
+            <svg class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true" viewBox="0 0 16 16" width="15" height="15"><path d="M13.5 9.6A6 6 0 0 1 6.4 2.5a6 6 0 1 0 7.1 7.1Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+            <svg class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true" viewBox="0 0 16 16" width="15" height="15"><circle cx="8" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6 13 13M13 3l-1.4 1.4M4.4 11.6 3 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </button>
     </header>
 
-
     <main id="main">
-        <section id="home" class="hero">
-            <div class="hero-background">
-                <div class="neural-network">
-                    <svg class="network-svg" viewBox="0 0 800 600">
-                        <defs>
-                            <filter id="glow">
-                                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                                <feMerge> 
-                                    <feMergeNode in="coloredBlur"/>
-                                    <feMergeNode in="SourceGraphic"/>
-                                </feMerge>
-                            </filter>
-                        </defs>
-                    </svg>
-                </div>
-                <div class="mesh-gradient"></div>
+
+        <section id="top" class="hero">
+            <h1 class="hero__name" data-reveal>Vishal&nbsp;V&nbsp;V</h1>
+            <p class="hero__lede" data-reveal>
+                Computer-science student working
+                <span class="circled">two tracks<svg class="circled__svg" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M12 32 C 18 9, 178 4, 191 24 C 197 45, 74 58, 18 48 C 4 44, 7 38, 14 30"/></svg></span>
+                — <strong>cybersecurity</strong> and <strong>applied&nbsp;AI</strong>.
+                I build agents that talk, models that predict, and tools that defend, mostly
+                in Python. I learn by shipping, breaking things on purpose, and reading the
+                stack trace.
+            </p>
+
+            <div class="tracks" role="group" aria-label="Highlight work by track" data-reveal>
+                <span class="tracks__hint" id="tracksHint">Two tracks — pick one to highlight related work:</span>
+                <button class="track-chip" type="button" data-track-toggle="security" aria-pressed="false">
+                    <svg class="thread thread--security" viewBox="0 0 14 8" width="14" height="8" aria-hidden="true"><path d="M1 6 C 5 6, 9 2, 13 2"/></svg>Security
+                </button>
+                <button class="track-chip" type="button" data-track-toggle="ai" aria-pressed="false">
+                    <svg class="thread thread--ai" viewBox="0 0 14 8" width="14" height="8" aria-hidden="true"><path d="M1 2 C 5 2, 9 6, 13 6"/></svg>Applied AI
+                </button>
             </div>
-            
-            <div class="hero-content">
-                <div class="hero-label">
-                    <div class="label-dot"></div>
-                    <span>Student Portfolio 2025</span>
+
+            <ul class="hero__links" data-reveal>
+                <li><a href="mailto:vcubegalaxy@gmail.com">Email</a></li>
+                <li><a href="https://github.com/v3vishal" rel="noopener">GitHub&nbsp;↗</a></li>
+                <li><a href="https://linkedin.com/in/v3-vishal" rel="noopener">LinkedIn&nbsp;↗</a></li>
+            </ul>
+        </section>
+
+        <section id="projects" class="section" aria-labelledby="projectsTitle">
+            <h2 id="projectsTitle" class="section__title" data-reveal>Projects</h2>
+
+            <article class="project" data-track="ai" data-reveal>
+                <p class="marginalia" aria-hidden="true">// v1 memorised the dataset.<br>v2 actually learned it.</p>
+                <div class="project__head">
+                    <h3 class="project__name">Agri-Fincaster</h3>
+                    <p class="project__meta"><svg class="thread thread--ai" viewBox="0 0 14 8" width="14" height="8" aria-hidden="true"><path d="M1 2 C 5 2, 9 6, 13 6"/></svg>2024–25 · shipped</p>
                 </div>
-                
-                <h1 class="hero-title">
-                    <span class="word-2">Vishal V V</span><br>
-                    <span class="word-1">Aspiring</span>
-                    <span class="word-2">Cybersecurity</span>
-                    <span class="word-3">Student</span>
-                </h1>
-                
-                <div class="hero-tagline">
-                    <div class="tagline-item">
-                        <span class="icon">🔐</span>
-                        <span class="text">Security Focused</span>
-                    </div>
-                    <div class="tagline-item">
-                        <span class="icon">🤖</span>
-                        <span class="text">ML Powered</span>
-                    </div>
-                    <div class="tagline-item">
-                        <span class="icon">⚡</span>
-                        <span class="text">Innovation Driven</span>
-                    </div>
-                </div>
-                
-                <p class="hero-description">
-                    Passionate about building the future of digital security through machine learning and innovative project development.
+                <p class="project__desc">
+                    Crop-yield forecasting from public agricultural data. Regression models trained on
+                    government datasets predict yield for a region and suggest planting windows, so
+                    farmers and stakeholders can plan crops with data instead of guesswork.
                 </p>
-                
-                <div class="hero-actions">
-                    <a href="#projects" class="primary-btn">
-                        <span>Explore Projects</span>
-                        <div class="btn-arrow">></div>
-                    </a>
-                    <a href="#contact" class="secondary-btn">
-                        <span>Get In Touch</span>
-                    </a>
+                <p class="project__credit">Built with Vihaan S for the CBSE Science Exhibition 2024–25.</p>
+                <p class="project__links">
+                    <a href="/projects/agri-fincaster/">Case study&nbsp;→</a>
+                    <a href="https://github.com/v3vishal/agri-fincaster" rel="noopener">GitHub&nbsp;↗</a>
+                </p>
+            </article>
+
+            <article class="project" data-track="ai" data-reveal>
+                <p class="marginalia" aria-hidden="true">// the categoriser and i<br>are still negotiating.</p>
+                <div class="project__head">
+                    <h3 class="project__name">Monie</h3>
+                    <p class="project__meta"><svg class="thread thread--ai" viewBox="0 0 14 8" width="14" height="8" aria-hidden="true"><path d="M1 2 C 5 2, 9 6, 13 6"/></svg>in development</p>
                 </div>
-            </div>
+                <p class="project__desc">
+                    Personal-finance analysis that uses machine learning to surface spending patterns,
+                    flag unusual transactions, and suggest budget adjustments — built as a Social
+                    Action Project.
+                </p>
+                <p class="project__links">
+                    <a href="/projects/monie/">Case study&nbsp;→</a>
+                    <span class="project__soon">code coming soon</span>
+                </p>
+            </article>
+
+            <article class="project" data-track="security" data-reveal>
+                <p class="marginalia" aria-hidden="true">// broke my own passwords<br>first, as is tradition.</p>
+                <div class="project__head">
+                    <h3 class="project__name">Crypt</h3>
+                    <p class="project__meta"><svg class="thread thread--security" viewBox="0 0 14 8" width="14" height="8" aria-hidden="true"><path d="M1 6 C 5 6, 9 2, 13 2"/></svg>stable</p>
+                </div>
+                <p class="project__desc">
+                    A Python security toolkit: modular encryption and decryption, password-strength
+                    analysis, and educational cracking simulations. Designed for both CLI and web use,
+                    with ethical security testing in mind.
+                </p>
+                <p class="project__links">
+                    <a href="/projects/crypt/">Case study&nbsp;→</a>
+                    <span class="project__soon">code coming soon</span>
+                </p>
+            </article>
         </section>
 
+        <section id="toolkit" class="section" aria-labelledby="toolkitTitle">
+            <h2 id="toolkitTitle" class="section__title" data-reveal>Toolkit</h2>
+            <p class="section__note" data-reveal>What I'm hands-on with right now.</p>
 
-        <section id="about">
-            <div class="section-header">
-                <h2>About Me</h2>
-                <p>Student, learner, and future cybersecurity professional</p>
-            </div>
-            
-            <div class="about-container">
-                <div class="about-card">
-                    <div class="card-header">
-                        <div class="terminal-dots">
-                            <span class="dot red"></span>
-                            <span class="dot yellow"></span>
-                            <span class="dot green"></span>
-                        </div>
-                        <div class="card-title">student@cyber:~$</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="typing-animation">
-                            <div class="code-line">
-                                <span class="comment"># Passionate computer science student</span>
-                            </div>
-                            <div class="code-line">
-                                <span class="keyword">class</span> <span class="class-name">Student</span>:
-                            </div>
-                            <div class="code-line indent">
-                                <span class="keyword">def</span> <span class="function">__init__</span>(<span class="param">self</span>):
-                            </div>
-                            <div class="code-line indent-2">
-                                <span class="param">self</span>.<span class="property">passion</span> = <span class="string">"cybersecurity"</span>
-                            </div>
-                            <div class="code-line indent-2">
-                                <span class="param">self</span>.<span class="property">coreskills</span> = [<span class="string">"ML"</span>, <span class="string">"Python"</span>, <span class="string">"Security"</span>]
-                            </div>
-                            <div class="code-line indent-2">
-                                <span class="param">self</span>.<span class="property">goal</span> = <span class="string">"protect_digital_world"</span>
-                            </div>
-                        </div>
-                        
-                        <div class="about-text">
-                            <p>I'm a dedicated computer science student with a deep fascination for cybersecurity and machine learning. Currently building practical projects that combine both fields, from AI-powered security tools to predictive analytics applications.</p>
-                            
-                            <p>My journey includes hands-on experience with machine learning models, security tool development, and participation in cybersecurity learning platforms like TryHackMe. I believe in learning by doing and constantly challenging myself with new projects.</p>
-                            
-                            <div class="stats-grid">
-                                <div class="stat-item">
-                                    <div class="stat-number">3+</div>
-                                    <div class="stat-label">Projects</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-number">2</div>
-                                    <div class="stat-label">Certifications</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-number">∞</div>
-                                    <div class="stat-label">Curiosity</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="card-footer">
-                        <div class="status-indicator">
-                            <span class="status-dot"></span>
-                            <span class="status-text">Currently learning and building</span>
-                        </div>
-                    </div>
+            <dl class="toolkit">
+                <div class="tool" data-track="security ai" data-reveal>
+                    <dt class="tool__name">Python</dt>
+                    <dd class="tool__desc">My daily language — typed and async. Everything from ML pipelines (pandas, scikit-learn) to security scripting and agent backends.</dd>
                 </div>
-            </div>
+                <div class="tool" data-track="ai" data-reveal>
+                    <dt class="tool__name">LiveKit</dt>
+                    <dd class="tool__desc">Real-time voice agents: STT → LLM → TTS pipelines with interruption handling, tool calls, and low-latency audio rooms.</dd>
+                </div>
+                <div class="tool" data-track="ai" data-reveal>
+                    <dt class="tool__name">Pydantic AI</dt>
+                    <dd class="tool__desc">Typed LLM agents — structured outputs, tool calling, and validation that catches model drift at the boundary.</dd>
+                </div>
+                <div class="tool" data-track="ai" data-reveal>
+                    <dt class="tool__name">ag-ui</dt>
+                    <dd class="tool__desc">The protocol layer between agents and interfaces: streaming tool calls, state sync, and generative UI in the browser.</dd>
+                </div>
+            </dl>
         </section>
 
+        <section id="skills" class="section" aria-labelledby="skillsTitle">
+            <h2 id="skillsTitle" class="section__title" data-reveal>Skills</h2>
 
-        <section id="projects">
-            <div class="section-header">
-                <h2>My Projects</h2>
-                <p>Student projects exploring cybersecurity concepts and machine learning applications</p>
-            </div>
-            
-            <div class="projects-grid">
-                <div class="project-card">
-                    <h3>agrifincaster</h3>
-                    <p>Agricultural forecasting and production/yield prediction application powered by machine learning models trained on government agricultural data. This intelligent system helps farmers and stakeholders make data-driven decisions for optimal crop planning and resource allocation.</p>
-                    
-                    <div class="collaboration">
-                        <strong>Collaboration:</strong> Developed with Vihaan S for the CBSE Science Exhibition (2024-25)
-                    </div>
-                    
-                    <div class="terminal">
-                        <div class="terminal-header">$ python agrifincaster.py --predict --crop=wheat</div>
-                        Loading govt. agricultural dataset...<br>
-                        Processing weather & soil data for region...<br>
-                        ML Model: Random Forest Regressor (94.2% accuracy)<br>
-                        Predicted Yield: 4.2 tonnes/hectare ↗️ 12% increase<br>
-                        [INFO] Optimal planting window: March 15-25
-                    </div>
-                    
-                    <div class="project-links">
-                        <a href="/agri-fincaster" class="project-link">Learn More →</a>
-                        <a href="https://github.com/v3vishal/agri-fincaster" class="project-link">GitHub →</a>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <h3>monie</h3>
-                    <p>Personal finance management and analysis tool leveraging machine learning algorithms to provide intelligent financial insights, spending pattern analysis, and budget optimization recommendations.<br><br> A <b>Social Action Project</b> (SAP)</p>
-                    
-                    <div class="terminal">
-                        <div class="terminal-header">$ python monie.py --analyze --period=monthly</div>
-                        Analyzing financial transactions...<br>
-                        Spending patterns identified: 5 categories<br>
-                        ML Insight: 23% overspend on dining detected<br>
-                        Budget recommendation: Reduce by $127/month<br>
-                        [ALERT] Unusual transaction pattern detected
-                    </div>
-                    
-                    <div class="project-links">
-                        <a href="/monie" class="project-link">Learn More →</a>
-                        <a href="#" class="project-link">GitHub →</a>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <h3>crypt</h3>
-                    <p>Comprehensive Python-based cybersecurity toolkit featuring modular encryption/decryption functions, password strength analysis, and educational cracking simulations. Designed for both CLI and web deployment with ethical security testing capabilities.</p>
-                    
-                    <div class="terminal">
-                        <div class="terminal-header">$ python crypt.py --encrypt --cipher=vigenere --key=SECRET</div>
-                        [INFO] Loading encryption modules...<br>
-                        Input: "Hello World"<br>
-                        Vigenère Cipher Applied → "Zincs Aisnh"<br>
-                        [INFO] Password strength: 87/100 ✅ Strong<br>
-                        [SIMULATION] Brute force time: ~2.3 years<br>
-                        [DICT] Found in rockyou.txt: ❌ Safe
-                    </div>
-                    
-                    <div class="project-links">
-                        <a href="/crypt" class="project-link">Learn More →</a>
-                        <a href="#" class="project-link">GitHub →</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="skills">
-            <div class="section-header">
-                <h2>Skills & Learning</h2>
-                <p>Technical skills developed through academic projects and self-directed learning</p>
-            </div>
-            
-            <div class="skills-grid">
-                <div class="skill-category">
-                    <h3>Cybersecurity Learning</h3>
-                    <ul class="skill-list">
-                        <li>Network Security Basics</li>
-                        <li>Encryption & Cryptography</li>
-                        <li>Password Security Analysis</li>
-                        <li>Web Application Security</li>
-                        <li>Linux Security Fundamentals</li>
-                        <li>Security Tool Development</li>
+            <div class="skills">
+                <div class="skills__group" data-track="security" data-reveal>
+                    <h3 class="skills__heading"><svg class="thread thread--security" viewBox="0 0 14 8" width="14" height="8" aria-hidden="true"><path d="M1 6 C 5 6, 9 2, 13 2"/></svg>Security</h3>
+                    <ul>
+                        <li>Network fundamentals</li>
+                        <li>Cryptography &amp; hashing</li>
+                        <li>Password security</li>
+                        <li>Web &amp; API security basics</li>
+                        <li>Linux hardening</li>
                     </ul>
                 </div>
-                
-                <div class="skill-category">
-                    <h3>Machine Learning</h3>
-                    <ul class="skill-list">
-                        <li>Python ML Libraries</li>
-                        <li>Data Analysis & Visualization</li>
-                        <li>Predictive Modeling</li>
-                        <li>Pattern Recognition</li>
-                        <li>Feature Engineering</li>
-                        <li>Model Training & Evaluation</li>
+                <div class="skills__group" data-track="ai" data-reveal>
+                    <h3 class="skills__heading"><svg class="thread thread--ai" viewBox="0 0 14 8" width="14" height="8" aria-hidden="true"><path d="M1 2 C 5 2, 9 6, 13 6"/></svg>AI &amp; ML</h3>
+                    <ul>
+                        <li>Supervised modelling</li>
+                        <li>Feature engineering &amp; evaluation</li>
+                        <li>LLM tool use &amp; structured output</li>
+                        <li>Voice &amp; conversational agents</li>
+                        <li>Prompt design &amp; eval loops</li>
                     </ul>
                 </div>
-                
-                <div class="skill-category">
-                    <h3>Programming & Tools</h3>
-                    <ul class="skill-list">
-                        <li>Python (Advanced)</li>
-                        <li>HTML/CSS/JavaScript</li>
-                        <li>Git & Version Control</li>
-                        <li>Linux Command Line</li>
-                        <li>Database Fundamentals</li>
-                        <li>API Development</li>
+                <div class="skills__group" data-reveal>
+                    <h3 class="skills__heading">Engineering</h3>
+                    <ul>
+                        <li>Python — typed, async</li>
+                        <li>HTML, CSS, JavaScript</li>
+                        <li>Git &amp; version control</li>
+                        <li>Linux command line</li>
+                        <li>REST APIs &amp; SQL</li>
                     </ul>
                 </div>
-                
-                <div class="skill-category">
-                    <h3>Certifications</h3>
-                    <ul class="skill-list">
-                        <li>TryHackMe - Pre Security</li>
-                        <li>TryHackMe - Advent of Cyber 2024</li>
-                        <li style="color: #666; font-style: italic;">Currently pursuing more...</li>
+                <div class="skills__group" data-track="security" data-reveal>
+                    <h3 class="skills__heading"><svg class="thread thread--security" viewBox="0 0 14 8" width="14" height="8" aria-hidden="true"><path d="M1 6 C 5 6, 9 2, 13 2"/></svg>Certifications</h3>
+                    <ul>
+                        <li>TryHackMe — Pre-Security</li>
+                        <li>TryHackMe — Advent of Cyber 2024</li>
+                        <li class="skills__pending">More in progress</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <section id="contact" class="contact-section">
-            <div class="section-header">
-                <h2>Let's Connect</h2>
-                <p>Always eager to learn, collaborate, and discuss cybersecurity and machine learning</p>
-            </div>
-            
-            <div class="contact-links">
-                <a href="mailto:vcubegalaxy@gmail.com" class="contact-link">Email Me</a>
-                <a href="https://linkedin.com/in/v3-vishal" class="contact-link">LinkedIn</a>
-                <a href="https://github.com/v3vishal" class="contact-link">GitHub</a>
-                <a href="https://discord.com/" class="contact-link">Discord - v3xg</a>
-            </div>
+        <section id="contact" class="section" aria-labelledby="contactTitle">
+            <h2 id="contactTitle" class="section__title" data-reveal>Contact</h2>
+            <p class="section__note" data-reveal>Always happy to trade notes on security, agents, and ML. Departures below.</p>
+
+            <ul class="contact" data-reveal>
+                <li class="contact__row contact__row--head" aria-hidden="true">
+                    <span class="contact__label">channel</span>
+                    <span class="contact__cols-handle">handle</span>
+                    <span class="contact__cols-status">status</span>
+                </li>
+                <li class="contact__row">
+                    <span class="contact__label">Email</span>
+                    <a class="contact__value" href="mailto:vcubegalaxy@gmail.com" data-flap>vcubegalaxy@gmail.com</a>
+                    <span class="contact__status">on time</span>
+                    <button class="copy-btn" type="button" data-copy="vcubegalaxy@gmail.com">Copy</button>
+                </li>
+                <li class="contact__row">
+                    <span class="contact__label">GitHub</span>
+                    <a class="contact__value" href="https://github.com/v3vishal" rel="noopener"><span data-flap>@v3vishal</span>&nbsp;↗</a>
+                    <span class="contact__status">in service</span>
+                </li>
+                <li class="contact__row">
+                    <span class="contact__label">LinkedIn</span>
+                    <a class="contact__value" href="https://linkedin.com/in/v3-vishal" rel="noopener"><span data-flap>in/v3-vishal</span>&nbsp;↗</a>
+                    <span class="contact__status">scheduled</span>
+                </li>
+                <li class="contact__row">
+                    <span class="contact__label">Discord</span>
+                    <span class="contact__value" data-flap>v3xg</span>
+                    <span class="contact__status contact__status--standby">standby</span>
+                    <button class="copy-btn" type="button" data-copy="v3xg">Copy</button>
+                </li>
+            </ul>
         </section>
+
     </main>
 
-    <footer>
-        <p>&copy; 2025 Vishal V V. Student portfolio - Built with passion for learning cybersecurity and ML.</p>
+    <footer class="site-footer">
+        <p>© <span id="year">2026</span> Vishal V V</p>
+        <p class="site-footer__hint"><svg class="doodle-arrow" viewBox="0 0 26 18" width="22" height="15" aria-hidden="true"><path d="M2 15 C 9 16, 17 11, 21 4"/><path d="M16 5 L21 3.5 L20 9"/></svg>Press <kbd>`</kbd> for the terminal</p>
+        <p>Built by hand — no frameworks. <a href="https://github.com/v3vishal/v3vishal.github.io" rel="noopener">Source&nbsp;↗</a></p>
     </footer>
 
+    <!-- The site-map and terminal panels are injected by script.js on every
+         page — they are interactive-only features, so they live in one place. -->
     <script src="script.js"></script>
 </body>
 </html>
-
