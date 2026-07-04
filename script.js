@@ -243,9 +243,18 @@
             } else {
                 shape = '<circle cx="' + s.stop[0] + '" cy="' + s.stop[1] + '" r="6" class="sitemap__stop sitemap__stop--' + s.stop[2] + '"/>';
             }
+            // The counter-rotation pivot is baked in as an exact SVG-native
+            // transform (rotating about this label's own x,y), which is
+            // more precise than CSS transform-box:fill-box for anchored
+            // text. CSS cancels this attribute outright on desktop
+            // (.sitemap__label{transform:none}) since it's only meant to
+            // apply under the mobile rotated-map treatment. (The viewBox
+            // below was extended vertically for a separate, bigger reason:
+            // rotated labels near its old y-edges were getting clipped by
+            // the SVG's own intrinsic boundary — see that comment.)
             return '<a href="' + s.href + '" class="sitemap__station" data-station="' + s.id + '" data-lines="' + s.lines + '" data-x="' + s.x + '" role="listitem" aria-label="' + s.label + '">' +
                 shape +
-                '<text x="' + s.labelPos[0] + '" y="' + s.labelPos[1] + '" text-anchor="' + s.labelPos[2] + '" class="sitemap__label">' + s.label + '</text></a>';
+                '<text x="' + s.labelPos[0] + '" y="' + s.labelPos[1] + '" text-anchor="' + s.labelPos[2] + '" class="sitemap__label" transform="rotate(-90 ' + s.labelPos[0] + ' ' + s.labelPos[1] + ')">' + s.label + '</text></a>';
         }).join('');
 
         var el = document.createElement('div');
@@ -264,7 +273,20 @@
             '<button id="mapClose" class="sitemap__close" type="button" aria-label="Close site map">✕</button></header>' +
             '<div class="sitemap__body">' +
             '<div class="sitemap__svg-wrap">' +
-            '<svg class="sitemap__svg" viewBox="0 0 560 210" role="list" aria-label="Pages">' +
+            // viewBox extended from "0 0 560 210" to "0 -60 560 320" — some
+            // labels (projects, agri-fincaster, writeups) sit close to the
+            // original y:0/210 edges, which is fine for horizontal desktop
+            // text but not for the mobile rotated map: a rotated label's
+            // bounding box is as tall as the ORIGINAL text was wide, and
+            // that exceeded the viewBox bounds for the longer labels — the
+            // SVG's own intrinsic edge-clipping (independent of any CSS
+            // overflow rule) then silently ate a couple of characters off
+            // one end. Extending the viewBox gives every rotated label
+            // room without moving any station's actual coordinates. This
+            // does make the desktop map render a bit taller (blank
+            // padding above/below, ~7:4 aspect instead of ~8:3) — checked
+            // visually and it reads as fine, not broken.
+            '<svg class="sitemap__svg" viewBox="0 -60 560 320" role="list" aria-label="Pages">' +
             '<defs><linearGradient id="interchangeGrad" x1="0" y1="0" x2="1" y2="1">' +
             '<stop offset="0%" stop-color="var(--security)"/><stop offset="100%" stop-color="var(--ai)"/>' +
             '</linearGradient></defs>' +
