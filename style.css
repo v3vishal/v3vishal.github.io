@@ -10,8 +10,8 @@
 
     --paper:      #f7f8f7;
     --ink:        #191c1b;
-    --ink-muted:  #565d5a;
-    --line:       #e1e4e1;
+    --ink-muted:  #4c534f;
+    --line:       #d9dcd9;
     --surface:    #eef0ee;
     --glass:      rgba(247, 248, 247, 0.72);
     --glass-strong: rgba(247, 248, 247, 0.92);
@@ -20,6 +20,12 @@
     --security:   #0f6b53;   /* deep pine  — the security line */
     --ai:         #2b49c8;   /* cobalt     — the AI line       */
     --warn:       #a8451f;
+
+    /* ambient blobs read very differently against a near-white vs. a
+       near-black canvas at the same opacity — tuned per theme so both
+       are equally (and equally subtly) present, not just equal numbers. */
+    --ambient-opacity: 0.24;
+    --ambient-blend: multiply;
 
     --f-text: 'Schibsted Grotesk', system-ui, -apple-system, sans-serif;
     --f-mono: 'Fragment Mono', ui-monospace, 'SF Mono', Consolas, monospace;
@@ -33,7 +39,7 @@
     --paper:      #141716;
     --ink:        #e6eae7;
     --ink-muted:  #a2aaa6;
-    --line:       #272c2a;
+    --line:       #2c322f;
     --surface:    #1c201e;
     --glass:      rgba(20, 23, 22, 0.72);
     --glass-strong: rgba(20, 23, 22, 0.94);
@@ -41,6 +47,8 @@
     --security:   #56c3a2;
     --ai:         #97abff;
     --warn:       #ff9a76;
+    --ambient-opacity: 0.18;
+    --ambient-blend: screen;
 }
 
 /* JS-off fallback: follow the system without a data-theme attribute. */
@@ -50,7 +58,7 @@
         --paper:      #141716;
         --ink:        #e6eae7;
         --ink-muted:  #a2aaa6;
-        --line:       #272c2a;
+        --line:       #2c322f;
         --surface:    #1c201e;
         --glass:      rgba(20, 23, 22, 0.72);
         --glass-strong: rgba(20, 23, 22, 0.94);
@@ -58,6 +66,8 @@
         --security:   #56c3a2;
         --ai:         #97abff;
         --warn:       #ff9a76;
+        --ambient-opacity: 0.18;
+        --ambient-blend: screen;
     }
 }
 
@@ -149,31 +159,32 @@ body[data-track-active="ai"] .mark__ai  { stroke: var(--security); }
 .ambient::after {
     content: '';
     position: absolute;
-    width: 42vmax; height: 28vmax;
+    width: 46vmax; height: 30vmax;
     background-repeat: no-repeat;
     background-size: contain;
-    filter: blur(34px);
-    opacity: 0.13;
+    filter: blur(30px);
+    opacity: var(--ambient-opacity);
+    mix-blend-mode: var(--ambient-blend);
 }
 .ambient::before {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 128'%3E%3Cpath d='M16 24 C72 24,80 104,176 104' stroke='%232b49c8' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3Cpath d='M16 104 C72 104,80 24,176 24' stroke='%230f6b53' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 128'%3E%3Cpath d='M16 24 C72 24,80 104,176 104' stroke='%232b49c8' stroke-width='10' fill='none' stroke-linecap='round'/%3E%3Cpath d='M16 104 C72 104,80 24,176 24' stroke='%230f6b53' stroke-width='10' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
     top: -11vmax; right: -15vmax;
     animation: drift-a 46s ease-in-out infinite alternate;
 }
 .ambient::after {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 128'%3E%3Cpath d='M16 24 C72 24,80 104,176 104' stroke='%232b49c8' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3Cpath d='M16 104 C72 104,80 24,176 24' stroke='%230f6b53' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 128'%3E%3Cpath d='M16 24 C72 24,80 104,176 104' stroke='%232b49c8' stroke-width='10' fill='none' stroke-linecap='round'/%3E%3Cpath d='M16 104 C72 104,80 24,176 24' stroke='%230f6b53' stroke-width='10' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
     bottom: -13vmax; left: -16vmax;
     transform: rotate(180deg);
     animation: drift-b 56s ease-in-out infinite alternate;
 }
 :root[data-theme="dark"] .ambient::before,
 :root[data-theme="dark"] .ambient::after {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 128'%3E%3Cpath d='M16 24 C72 24,80 104,176 104' stroke='%2397abff' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3Cpath d='M16 104 C72 104,80 24,176 24' stroke='%2356c3a2' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 128'%3E%3Cpath d='M16 24 C72 24,80 104,176 104' stroke='%2397abff' stroke-width='10' fill='none' stroke-linecap='round'/%3E%3Cpath d='M16 104 C72 104,80 24,176 24' stroke='%2356c3a2' stroke-width='10' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme]) .ambient::before,
     :root:not([data-theme]) .ambient::after {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 128'%3E%3Cpath d='M16 24 C72 24,80 104,176 104' stroke='%2397abff' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3Cpath d='M16 104 C72 104,80 24,176 24' stroke='%2356c3a2' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 128'%3E%3Cpath d='M16 24 C72 24,80 104,176 104' stroke='%2397abff' stroke-width='10' fill='none' stroke-linecap='round'/%3E%3Cpath d='M16 104 C72 104,80 24,176 24' stroke='%2356c3a2' stroke-width='10' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
     }
 }
 @keyframes drift-a {
