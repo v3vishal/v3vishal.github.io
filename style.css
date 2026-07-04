@@ -73,7 +73,11 @@
 
 /* ---------- reset ---------- */
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html {
+    scroll-behavior: smooth;
+    /* iOS gives text a surprise size bump in landscape unless told not to. */
+    -webkit-text-size-adjust: 100%;
+}
 body {
     margin: 0;
     background: var(--paper);
@@ -83,6 +87,9 @@ body {
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    /* Prevent any stray child from opening a horizontal scrollbar on phones —
+       every section below is built not to need it, this is just a backstop. */
+    overflow-x: hidden;
 }
 img, svg { max-width: 100%; }
 img { display: block; }
@@ -91,6 +98,22 @@ a:hover { text-decoration-style: wavy; text-decoration-thickness: 1px; }
 ul { padding: 0; margin: 0; list-style: none; }
 h1, h2, h3, p, dl, dd { margin: 0; }
 button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+
+/* ---------- touch devices ----------
+   Bigger tap targets, no lingering gray-flash on tap, no 300ms tap delay —
+   applied broadly, since a mouse user never notices any of these. */
+a, button, [role="button"] { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+@media (hover: none) and (pointer: coarse) {
+    .theme-toggle, .term-toggle { width: 2.75rem; height: 2.75rem; }
+    .map-toggle { padding: 0.55rem 0.8rem; }
+    .copy-btn { padding: 0.5rem 0.9rem; }
+    .sitemap__close, .terminal__close { width: 2.25rem; height: 2.25rem; }
+    /* Real presses need real feedback once the mouse-only glow/tilt/magnetic
+       effects (gated to fine pointers) aren't there to provide it. */
+    .track-chip:active, .copy-btn:active,
+    .theme-toggle:active, .term-toggle:active, .map-toggle:active,
+    .sitemap__close:active, .terminal__close:active { background: var(--surface); }
+}
 kbd {
     font-family: var(--f-mono);
     font-size: 0.75em;
@@ -225,6 +248,17 @@ body[data-track-active="ai"] .mark__ai  { stroke: var(--security); }
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--line);
+}
+
+/* Wordmark + toggles are the essentials and stay on one row; on phones
+   too narrow to also fit three nav links (~380px and under), the nav
+   drops to its own row rather than overflowing or getting clipped. This
+   keeps navigation reachable with JS off, where the site-map/terminal
+   overlays this doubles as elsewhere aren't available yet. */
+@media (max-width: 420px) {
+    .site-header { flex-wrap: wrap; row-gap: 0.5rem; }
+    .site-nav { order: 3; flex-basis: 100%; justify-content: center; margin-left: 0; }
+    .section, .hero { scroll-margin-top: 6.75rem; }
 }
 
 .wordmark {
@@ -859,6 +893,7 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
     justify-items: center;
     align-items: start;
     padding: clamp(4rem, 14vh, 8rem) var(--pad) 1rem;
+    padding-top: clamp(4rem, 14dvh, 8rem);
     background: var(--scrim);
     opacity: 0;
     pointer-events: none;
@@ -915,9 +950,19 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
 @media (max-width: 560px) { .sitemap__close { margin-left: auto; } }
 .sitemap__close:hover { color: var(--ink); background: var(--surface); }
 
+/* On a narrow phone, squeezing the whole 560-unit-wide transit map down to
+   fit would crush station dots well under a tappable size — a few stations
+   sit only ~18 viewBox units apart. Give it a floor and let it scroll
+   sideways instead, so targets stay a real size and stations stay
+   distinguishable; wide viewports never notice, since 100% already fits. */
+.sitemap__svg-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
 .sitemap__svg {
     display: block;
     width: 100%;
+    min-width: 30rem;
     height: auto;
     padding: 0.5rem 0.75rem 0;
 }
@@ -1012,6 +1057,7 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
     display: flex;
     flex-direction: column;
     height: min(24rem, 65vh);
+    height: min(24rem, 65dvh);
     background: var(--glass-strong);
     -webkit-backdrop-filter: blur(18px);
     backdrop-filter: blur(18px);
@@ -1091,6 +1137,11 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
     padding: 0;
 }
 .terminal__input:focus { outline: none; }
+/* iOS Safari auto-zooms the whole page on focusing any input under 16px —
+   a jarring surprise the mono font's 13px would otherwise trigger. */
+@media (max-width: 640px) {
+    .terminal__input { font-size: 1rem; }
+}
 
 /* ---------- 404 ---------- */
 .notfound {

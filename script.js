@@ -262,6 +262,7 @@
             '<span class="sitemap__legend-item"><svg class="thread thread--ai" viewBox="0 0 14 8" width="14" height="8" aria-hidden="true"><path d="M1 2 C 5 2, 9 6, 13 6"/></svg>ai line</span>' +
             '</span>' +
             '<button id="mapClose" class="sitemap__close" type="button" aria-label="Close site map">✕</button></header>' +
+            '<div class="sitemap__svg-wrap">' +
             '<svg class="sitemap__svg" viewBox="0 0 560 210" role="list" aria-label="Pages">' +
             '<defs><linearGradient id="interchangeGrad" x1="0" y1="0" x2="1" y2="1">' +
             '<stop offset="0%" stop-color="var(--security)"/><stop offset="100%" stop-color="var(--ai)"/>' +
@@ -271,7 +272,7 @@
             '<path id="line-branch" class="sitemap__line sitemap__line--sec sitemap__line--branch" d="M350 62 C 372 56, 396 45, 416 28"/>' +
             '<circle id="mapPacket" class="sitemap__packet" r="4.5" hidden></circle>' +
             stationsSvg +
-            '</svg>' +
+            '</svg></div>' +
             '<p class="sitemap__readout" id="mapReadout" aria-live="polite"></p></div>';
         document.body.appendChild(el);
         return el;
