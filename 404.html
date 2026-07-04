@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -12,6 +12,8 @@
 
     <script>
         (function () {
+            document.documentElement.classList.remove('no-js');
+            document.documentElement.classList.add('js');
             try {
                 var t = localStorage.getItem('theme');
                 if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -53,7 +55,7 @@
                 <path class="mark__sec-halo" d="M2 13 C 9 13, 10 3, 22 3"/>
                 <path class="mark__sec" d="M2 13 C 9 13, 10 3, 22 3"/>
             </svg>
-            <span class="map-toggle__label">Map</span>
+            <span class="map-toggle__label">Navigate</span><span class="map-toggle__arrow" aria-hidden="true">→</span>
         </button>
         <button id="termToggle" class="term-toggle" type="button" aria-label="Open terminal" aria-expanded="false" aria-controls="terminal"><span aria-hidden="true">&gt;_</span></button>
         <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to dark theme">
