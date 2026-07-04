@@ -222,7 +222,7 @@
         { id: 'agri-fincaster', href: '/projects/agri-fincaster/',  label: 'agri-fincaster', lines: 'ai',     x: 292, stop: [292, 150, 'ai'],   labelPos: [292, 172, 'middle'] },
         { id: 'monie',          href: '/projects/monie/',           label: 'monie',          lines: 'ai',     x: 386, stop: [386, 145, 'ai'],   labelPos: [386, 167, 'middle'] },
         { id: 'writeups',       href: '/blog/',                     label: 'writeups ✈', lines: 'branch', x: 416, stop: [416, 28, 'sec'],  labelPos: [428, 22, 'start'] },
-        { id: 'contact',        href: '/#contact',                  label: 'contact',        lines: 'sec ai', x: 468, dot: [468, 100],          labelPos: [468, 128, 'middle'] }
+        { id: 'contact',        href: '/#contact',                  label: 'contact',        lines: 'sec ai', x: 468, dot: [468, 100], interchange: true, labelPos: [468, 128, 'middle'] }
     ];
 
     function stationById(id) {
@@ -238,7 +238,8 @@
             if (s.pill) {
                 shape = '<rect x="' + s.pill[0] + '" y="' + s.pill[1] + '" width="' + s.pill[2] + '" height="' + s.pill[3] + '" rx="8" class="sitemap__pill"/>';
             } else if (s.dot) {
-                shape = '<circle cx="' + s.dot[0] + '" cy="' + s.dot[1] + '" r="8" class="sitemap__pill"/>';
+                var dotClass = 'sitemap__pill' + (s.interchange ? ' sitemap__pill--interchange' : '');
+                shape = '<circle cx="' + s.dot[0] + '" cy="' + s.dot[1] + '" r="8" class="' + dotClass + '"/>';
             } else {
                 shape = '<circle cx="' + s.stop[0] + '" cy="' + s.stop[1] + '" r="6" class="sitemap__stop sitemap__stop--' + s.stop[2] + '"/>';
             }
@@ -262,6 +263,9 @@
             '</span>' +
             '<button id="mapClose" class="sitemap__close" type="button" aria-label="Close site map">✕</button></header>' +
             '<svg class="sitemap__svg" viewBox="0 0 560 210" role="list" aria-label="Pages">' +
+            '<defs><linearGradient id="interchangeGrad" x1="0" y1="0" x2="1" y2="1">' +
+            '<stop offset="0%" stop-color="var(--security)"/><stop offset="100%" stop-color="var(--ai)"/>' +
+            '</linearGradient></defs>' +
             '<path id="line-sec" class="sitemap__line sitemap__line--sec" d="M32 62 C 110 57, 150 67, 238 62 C 300 58, 330 64, 358 62 C 402 59, 447 77, 468 98"/>' +
             '<path id="line-ai" class="sitemap__line sitemap__line--ai" d="M32 148 C 110 153, 150 143, 238 148 C 300 152, 330 146, 368 146 C 412 146, 449 121, 468 102"/>' +
             '<path id="line-branch" class="sitemap__line sitemap__line--sec sitemap__line--branch" d="M350 62 C 372 56, 396 45, 416 28"/>' +
