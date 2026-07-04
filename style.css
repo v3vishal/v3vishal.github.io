@@ -1022,11 +1022,19 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
            flip both this and the .sitemap__svg rotation below to the
            opposite sign — they must always cancel each other exactly. */
         transform: rotate(-90deg);
+        font-size: 13px;
     }
+    /* A fixed rem cap left real space unused on anything bigger than a
+       small phone — this ties the wrap directly to whatever width the
+       dialog actually has (viewport minus its own padding/border), so a
+       390-430px phone gets a noticeably bigger map instead of the same
+       capped size as a 360px one. Height is the same expression scaled
+       by the fixed 560:210 viewBox ratio (8/3), so the two always match
+       exactly regardless of viewport width. */
     .sitemap__svg-wrap {
         position: relative;
-        width: min(21rem, 88vw);
-        height: 56rem;
+        width: calc(100vw - 2.75rem);
+        height: calc((100vw - 2.75rem) * 8 / 3);
         margin: 0 auto;
         overflow: visible;
     }
@@ -1034,13 +1042,19 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
         position: absolute;
         top: 50%;
         left: 50%;
-        width: 56rem;
-        height: 21rem;
+        width: calc((100vw - 2.75rem) * 8 / 3);
+        height: calc(100vw - 2.75rem);
         min-width: 0;
         padding: 0;
         transform: translate(-50%, -50%) rotate(90deg);
         transform-origin: center;
     }
+    /* Bumped beyond what the bigger overall scale already gives, so dots
+       and lines carry more visual weight, not just more empty space
+       around them. */
+    .sitemap__stop { r: 8px; }
+    .sitemap__pill { width: 20px; }
+    .sitemap__line { stroke-width: 5px; }
 }
 .sitemap__line {
     fill: none;
