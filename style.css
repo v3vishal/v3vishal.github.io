@@ -936,6 +936,15 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
 
 .sitemap__panel {
     width: min(100%, 40rem);
+    /* The rotated mobile map (below) is taller than most phone viewports —
+       cap the panel and let its body scroll internally rather than
+       overflowing the fixed-position dialog, where content past the fold
+       would be un-reachable. Harmless on desktop: this only activates if
+       content actually exceeds the available height. */
+    max-height: calc(100vh - clamp(4rem, 14vh, 8rem) - 1rem);
+    max-height: calc(100dvh - clamp(4rem, 14dvh, 8rem) - 1rem);
+    display: flex;
+    flex-direction: column;
     background: var(--glass-strong);
     -webkit-backdrop-filter: blur(18px);
     backdrop-filter: blur(18px);
@@ -949,6 +958,7 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
 .sitemap.is-open .sitemap__panel { transform: none; }
 
 .sitemap__bar {
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -957,6 +967,10 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
     font-family: var(--f-mono);
     font-size: 0.75rem;
     color: var(--ink);
+}
+.sitemap__body {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 .sitemap__legend {
     margin-left: auto;
@@ -989,46 +1003,45 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
     padding: 0.5rem 0.75rem 0;
 }
 
-/* Below 640px the transit diagram gives way to a plain vertical list —
-   same stations, same colors, real tap targets. Squeezing the 560-unit
-   diagram down that far would crush station dots (some sit only ~18
-   viewBox units apart) below a tappable size; scrolling it sideways
-   instead just trades that for a different problem, since nothing
-   signals there's more off to the right. A list has neither failure
-   mode: everything's reachable by the scroll gesture people already
-   know, at whatever size makes it legible. */
-.sitemap__list { display: none; }
+/* Below 640px the whole transit diagram rotates 90° instead of squeezing
+   horizontally — same map, same brand, just read top-to-bottom. Station
+   labels get an equal-and-opposite counter-rotation (transform-box:
+   fill-box pivots each one on its own center, not the whole map's) so
+   they stay upright while the lines and dots around them turn vertical.
+   Rendered near full scale (not shrunk to fit), so the two stations only
+   ~18 viewBox units apart land a real ~29px apart on screen — the body
+   above scrolls to reveal the rest, the same gesture as any long page. */
+.sitemap__label {
+    transform-box: fill-box;
+    transform-origin: center;
+}
 @media (max-width: 640px) {
-    .sitemap__svg-wrap, .sitemap__legend { display: none; }
-    .sitemap__list { display: grid; padding: 0.5rem 0.5rem 0.75rem; }
+    .sitemap__legend { display: none; }
+    .sitemap__label {
+        /* If home/contact ever read bottom-to-top instead of top-to-bottom,
+           flip both this and the .sitemap__svg rotation below to the
+           opposite sign — they must always cancel each other exactly. */
+        transform: rotate(-90deg);
+    }
+    .sitemap__svg-wrap {
+        position: relative;
+        width: min(21rem, 88vw);
+        height: 56rem;
+        margin: 0 auto;
+        overflow: visible;
+    }
+    .sitemap__svg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 56rem;
+        height: 21rem;
+        min-width: 0;
+        padding: 0;
+        transform: translate(-50%, -50%) rotate(90deg);
+        transform-origin: center;
+    }
 }
-.sitemap__list-row {
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
-    padding: 0.9rem 0.75rem;
-    border-radius: 10px;
-    text-decoration: none;
-    color: var(--ink);
-    font-weight: 500;
-    transition: background 0.15s ease;
-}
-.sitemap__list-row:hover { background: var(--surface); }
-.sitemap__list-dots { display: inline-flex; gap: 4px; flex-shrink: 0; width: 1.1rem; }
-.sitemap__list-dot { width: 8px; height: 8px; border-radius: 50%; }
-.sitemap__list-dot--sec { background: var(--security); }
-.sitemap__list-dot--ai  { background: var(--ai); }
-.sitemap__list-label { flex: 1; }
-.sitemap__list-here {
-    display: none;
-    font-family: var(--f-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink-muted);
-}
-.sitemap__list-row.is-here { background: var(--surface); }
-.sitemap__list-row.is-here .sitemap__list-here { display: inline; }
 .sitemap__line {
     fill: none;
     stroke-width: 4;

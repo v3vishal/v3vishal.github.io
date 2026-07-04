@@ -232,17 +232,6 @@
         return null;
     }
 
-    // Which thread(s) a station belongs to, for a plain colored dot —
-    // the branch (writeups) reads as security since it's a pine spur off
-    // that line, not a literal third color.
-    function dotsFor(s) {
-        var tokens = s.lines.split(' ');
-        var dots = [];
-        if (tokens.indexOf('sec') !== -1 || tokens.indexOf('branch') !== -1) dots.push('sec');
-        if (tokens.indexOf('ai') !== -1) dots.push('ai');
-        return dots;
-    }
-
     function buildSitemap() {
         var stationsSvg = STATIONS.map(function (s) {
             var shape;
@@ -259,22 +248,6 @@
                 '<text x="' + s.labelPos[0] + '" y="' + s.labelPos[1] + '" text-anchor="' + s.labelPos[2] + '" class="sitemap__label">' + s.label + '</text></a>';
         }).join('');
 
-        // Squeezing the 560-unit-wide transit diagram down to a phone
-        // forces a choice between unreadably tiny stations or hidden
-        // horizontal scroll with no visible cue — neither reads as
-        // "working." Under 640px this plain vertical list stands in
-        // instead: same stations, same colors, real tap targets, nothing
-        // to discover. CSS shows exactly one of the two per breakpoint.
-        var stationsList = STATIONS.map(function (s) {
-            var dots = dotsFor(s).map(function (t) {
-                return '<span class="sitemap__list-dot sitemap__list-dot--' + t + '"></span>';
-            }).join('');
-            return '<a href="' + s.href + '" class="sitemap__list-row" data-station="' + s.id + '" role="listitem">' +
-                '<span class="sitemap__list-dots">' + dots + '</span>' +
-                '<span class="sitemap__list-label">' + s.label + '</span>' +
-                '<span class="sitemap__list-here">here</span></a>';
-        }).join('');
-
         var el = document.createElement('div');
         el.id = 'sitemap';
         el.className = 'sitemap';
@@ -289,6 +262,7 @@
             '<span class="sitemap__legend-item"><svg class="thread thread--ai" viewBox="0 0 14 8" width="14" height="8" aria-hidden="true"><path d="M1 2 C 5 2, 9 6, 13 6"/></svg>ai line</span>' +
             '</span>' +
             '<button id="mapClose" class="sitemap__close" type="button" aria-label="Close site map">✕</button></header>' +
+            '<div class="sitemap__body">' +
             '<div class="sitemap__svg-wrap">' +
             '<svg class="sitemap__svg" viewBox="0 0 560 210" role="list" aria-label="Pages">' +
             '<defs><linearGradient id="interchangeGrad" x1="0" y1="0" x2="1" y2="1">' +
@@ -300,8 +274,8 @@
             '<circle id="mapPacket" class="sitemap__packet" r="4.5" hidden></circle>' +
             stationsSvg +
             '</svg></div>' +
-            '<div class="sitemap__list" role="list">' + stationsList + '</div>' +
-            '<p class="sitemap__readout" id="mapReadout" aria-live="polite"></p></div>';
+            '<p class="sitemap__readout" id="mapReadout" aria-live="polite"></p>' +
+            '</div></div>';
         document.body.appendChild(el);
         return el;
     }
@@ -340,11 +314,6 @@
             pulse.setAttribute('r', r);
             pulse.setAttribute('class', 'sitemap__pulse');
             a.parentNode.insertBefore(pulse, a);
-        });
-
-        var listRows = Array.prototype.slice.call(sitemapEl.querySelectorAll('.sitemap__list-row'));
-        listRows.forEach(function (row) {
-            if (row.getAttribute('data-station') === hereId) row.classList.add('is-here');
         });
 
         function setReadout(html) { if (readout) readout.innerHTML = html; }
