@@ -221,7 +221,7 @@
         { id: 'crypt',          href: '/projects/crypt/',           label: 'crypt',          lines: 'sec',    x: 310, stop: [310, 61, 'sec'],   labelPos: [310, 44, 'middle'] },
         { id: 'agri-fincaster', href: '/projects/agri-fincaster/',  label: 'agri-fincaster', lines: 'ai',     x: 292, stop: [292, 150, 'ai'],   labelPos: [292, 172, 'middle'] },
         { id: 'monie',          href: '/projects/monie/',           label: 'monie',          lines: 'ai',     x: 386, stop: [386, 145, 'ai'],   labelPos: [386, 167, 'middle'] },
-        { id: 'writeups',       href: '/blog/',                     label: 'writeups ✈', lines: 'branch', x: 416, stop: [416, 28, 'sec'],  labelPos: [428, 22, 'start'] },
+        { id: 'writeups',       href: '/blog/',                     label: 'writeups',       lines: 'branch', x: 416, stop: [416, 28, 'sec'],  labelPos: [428, 22, 'start'] },
         { id: 'contact',        href: '/#contact',                  label: 'contact',        lines: 'sec ai', x: 468, dot: [468, 100], interchange: true, labelPos: [468, 128, 'middle'] }
     ];
 
@@ -243,7 +243,7 @@
             } else {
                 shape = '<circle cx="' + s.stop[0] + '" cy="' + s.stop[1] + '" r="6" class="sitemap__stop sitemap__stop--' + s.stop[2] + '"/>';
             }
-            return '<a href="' + s.href + '" class="sitemap__station" data-station="' + s.id + '" data-lines="' + s.lines + '" data-x="' + s.x + '" role="listitem" aria-label="' + s.label.replace(' ✈', ' (blog, departs this site)') + '">' +
+            return '<a href="' + s.href + '" class="sitemap__station" data-station="' + s.id + '" data-lines="' + s.lines + '" data-x="' + s.x + '" role="listitem" aria-label="' + s.label + '">' +
                 shape +
                 '<text x="' + s.labelPos[0] + '" y="' + s.labelPos[1] + '" text-anchor="' + s.labelPos[2] + '" class="sitemap__label">' + s.label + '</text></a>';
         }).join('');
@@ -319,7 +319,7 @@
             var s = stationById(hereId);
             if (!s) return 'you are here: <span class="t-warn">●</span> off the map — pick a station.';
             var tint = s.lines.indexOf('sec') !== -1 ? 't-sec' : 't-ai';
-            return 'you are here: <span class="' + tint + '">●</span> ' + s.label.replace(' ✈', '');
+            return 'you are here: <span class="' + tint + '">●</span> ' + s.label;
         }
         setReadout(hereLabel());
 
@@ -373,7 +373,7 @@
             var duration = Math.max(420, Math.min(900, totalDist * 2.2));
             var start = null;
             packet.removeAttribute('hidden'); // .hidden property is a no-op on SVG elements
-            setReadout('routing → ' + station.label.replace(' ✈', '') + ' …');
+            setReadout('routing → ' + station.label + ' …');
 
             function frame(ts) {
                 if (start === null) start = ts;
@@ -528,6 +528,7 @@
                     ['help',            'this list'],
                     ['whoami',          'who runs this site'],
                     ['projects',        'list projects'],
+                    ['experience',      'where i\'ve worked'],
                     ['cat <project>',   'project details (try: cat crypt)'],
                     ['map',             'open the site map'],
                     ['stack',           'current toolkit'],
@@ -549,6 +550,16 @@
             whoami: function () {
                 print('<span class="t-cmd">vishal v v</span> <span class="t-dim">— cs student, two tracks:</span> <span class="t-sec">security</span> <span class="t-dim">&amp;</span> <span class="t-ai">applied ai</span>');
                 print('<span class="t-dim">builds voice agents (livekit), typed llm systems (pydantic ai), ml models, and security tooling. learns by shipping.</span>');
+                print('<span class="t-dim">software engineering intern @ kenpath technologies — accessibility, agri-tech, voice agents.</span>');
+                print('');
+            },
+
+            experience: function () {
+                print('  <span class="t-cmd">kenpath technologies</span> <span class="t-dim">— software engineering intern</span>');
+                print('  <span class="t-dim">· accessibility-first android apps — kotlin, expo, react native</span>');
+                print('  <span class="t-dim">· agri-tech: mobile ↔ esp32/arduino hardware + livestock-disease ai agents</span>');
+                print('  <span class="t-dim">· livekit voice study companion — realtime + telephony + doc retrieval</span>');
+                print('  <span class="t-dim">· infra hardening: phishing protection, biometric auth, rbac</span>');
                 print('');
             },
 
@@ -597,7 +608,7 @@
             skills: function () {
                 print('  <span class="t-sec">security</span> <span class="t-dim">— network, crypto, passwords, web/api, linux</span>');
                 print('  <span class="t-ai">ai / ml</span> <span class="t-dim">— supervised models, llm tools, voice agents, evals</span>');
-                print('  <span class="t-cmd">certs</span>    <span class="t-dim">— tryhackme pre-security, advent of cyber 2024</span>');
+                print('  <span class="t-cmd">certs</span>    <span class="t-dim">— tryhackme pre-security, advent of cyber 2024, toi young ai explorer</span>');
                 print('');
             },
 
@@ -662,6 +673,7 @@
             exit: function () { closeTerm(); }
         };
         commands.ls = commands.projects;
+        commands.exp = commands.experience;
         commands.man = commands.help;
         commands.about = commands.whoami;
         commands.cls = commands.clear;

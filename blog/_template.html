@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     WRITEUP TEMPLATE — how to publish a post:
+
+     1. Copy this file to  /blog/<slug>/index.html
+        (slug = lowercase-with-dashes, e.g. thm-pickle-rick)
+     2. Find & replace:  SLUG, POST TITLE, ONE-LINE SUMMARY, DATE
+     3. Pick the track tag:
+        security thread = <path d="M1 6 C 5 6, 9 2, 13 2"/>  (pine)
+        ai thread       = <path d="M1 2 C 5 2, 9 6, 13 6"/>  (cobalt)
+     4. Write. Delete sections you don't need — shorter is fine.
+     5. Add a .log__row entry to /blog/index.html (newest first).
+
+     House style: flags/payloads go in <details> spoiler folds,
+     dead ends stay in, one <pre><code> block per command group.
+     ============================================================ -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POST TITLE — Vishal V V</title>
+    <meta name="description" content="ONE-LINE SUMMARY">
+    <link rel="canonical" href="https://v3x.is-a.dev/blog/SLUG/">
+    <meta name="theme-color" content="#f7f8f7">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://v3x.is-a.dev/blog/SLUG/">
+    <meta property="og:title" content="POST TITLE">
+    <meta property="og:description" content="ONE-LINE SUMMARY">
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23f7f8f7'/%3E%3Cpath d='M7 21 C 14 21 15 11 25 11' stroke='%232b49c8' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3Cpath d='M7 11 C 14 11 15 21 25 21' stroke='%230f6b53' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem('theme');
+                if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            } catch (e) { /* media query fallback in CSS applies */ }
+        })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fragment+Mono&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body data-station="writeups">
+
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <div class="ambient" aria-hidden="true"></div>
+
+    <header class="site-header">
+        <a class="wordmark" href="/" aria-label="Vishal V V — home">
+            <svg class="mark" viewBox="0 0 24 16" width="24" height="16" aria-hidden="true">
+                <path class="mark__ai"  d="M2 3 C 9 3, 10 13, 22 13"/>
+                <path class="mark__sec-halo" d="M2 13 C 9 13, 10 3, 22 3"/>
+                <path class="mark__sec" d="M2 13 C 9 13, 10 3, 22 3"/>
+            </svg>
+            Vishal&nbsp;V&nbsp;V
+        </a>
+        <nav class="site-nav" aria-label="Sections">
+            <a href="/#projects">Projects</a>
+            <a href="/blog/">Writeups</a>
+            <a href="/#contact">Contact</a>
+        </nav>
+        <button id="mapToggle" class="map-toggle" type="button" aria-label="Open site map" aria-expanded="false" aria-controls="sitemap">
+            <svg class="mark" viewBox="0 0 24 16" width="20" height="13" aria-hidden="true">
+                <path class="mark__ai"  d="M2 3 C 9 3, 10 13, 22 13"/>
+                <path class="mark__sec-halo" d="M2 13 C 9 13, 10 3, 22 3"/>
+                <path class="mark__sec" d="M2 13 C 9 13, 10 3, 22 3"/>
+            </svg>
+            <span class="map-toggle__label">Map</span>
+        </button>
+        <button id="termToggle" class="term-toggle" type="button" aria-label="Open terminal" aria-expanded="false" aria-controls="terminal"><span aria-hidden="true">&gt;_</span></button>
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to dark theme">
+            <svg class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true" viewBox="0 0 16 16" width="15" height="15"><path d="M13.5 9.6A6 6 0 0 1 6.4 2.5a6 6 0 1 0 7.1 7.1Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+            <svg class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true" viewBox="0 0 16 16" width="15" height="15"><circle cx="8" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6 13 13M13 3l-1.4 1.4M4.4 11.6 3 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </button>
+    </header>
+
+    <main id="main">
+        <article class="case">
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <a href="/">~</a><span aria-hidden="true">/</span><a href="/blog/">writeups</a><span aria-hidden="true">/</span><span aria-current="page">SLUG</span>
+            </nav>
+
+            <header class="case__head" data-reveal>
+                <h1 class="case__title">POST TITLE</h1>
+                <p class="case__meta">
+                    <span class="case__meta-item"><svg class="thread thread--security" viewBox="0 0 14 8" width="14" height="8" aria-hidden="true"><path d="M1 6 C 5 6, 9 2, 13 2"/></svg>tag</span>
+                    <span class="case__meta-item">DATE</span>
+                    <span class="case__meta-item">difficulty · easy</span>
+                </p>
+                <p class="case__lede">ONE-LINE SUMMARY — what the box/challenge was and the one idea that cracked it.</p>
+            </header>
+
+            <section class="case__section" data-reveal>
+                <h2>TL;DR</h2>
+                <p>Three sentences max: entry point, pivot, root. The busy reader leaves here.</p>
+            </section>
+
+            <section class="case__section" data-reveal>
+                <h2>Recon</h2>
+                <p>What the target exposed and how you found it.</p>
+                <pre><code>$ nmap -sC -sV -oN scans/initial 10.10.x.x</code></pre>
+            </section>
+
+            <section class="case__section" data-reveal>
+                <h2>Foothold</h2>
+                <p>The way in — include the reasoning, not just the command.</p>
+            </section>
+
+            <section class="case__section" data-reveal>
+                <h2>Privilege escalation</h2>
+                <p>From user to root.</p>
+                <details>
+                    <summary>spoiler — final payload / flag</summary>
+                    <pre><code>flag{...}</code></pre>
+                </details>
+            </section>
+
+            <section class="case__section" data-reveal>
+                <h2>Dead ends</h2>
+                <p>What you tried that didn't work, and why it couldn't have. Future-you reads this section first.</p>
+            </section>
+
+            <section class="case__section" data-reveal>
+                <h2>What I learned</h2>
+                <ul class="case__list">
+                    <li>One durable takeaway per bullet.</li>
+                </ul>
+            </section>
+
+            <section class="case__section" data-reveal>
+                <h2>Links</h2>
+                <p class="case__links">
+                    <a href="/blog/">← All writeups</a>
+                </p>
+            </section>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <p>© <span id="year">2026</span> Vishal V V</p>
+        <p class="site-footer__hint"><svg class="doodle-arrow" viewBox="0 0 26 18" width="22" height="15" aria-hidden="true"><path d="M2 15 C 9 16, 17 11, 21 4"/><path d="M16 5 L21 3.5 L20 9"/></svg>Press <kbd>`</kbd> for the terminal</p>
+        <p>Built by hand — no frameworks. <a href="https://github.com/v3vishal/v3vishal.github.io" rel="noopener">Source&nbsp;↗</a></p>
+    </footer>
+
+    <script src="../../script.js"></script>
+</body>
+</html>
