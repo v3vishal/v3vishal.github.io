@@ -1,0 +1,12 @@
+{
+  "name": "v3x-site-tools",
+  "private": true,
+  "description": "Dev tooling for v3x.is-a.dev — not deployed",
+  "scripts": {
+    "stamp": "node stamp-assets.mjs",
+    "verify": "node verify-nav.js"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.49.0"
+  }
+}

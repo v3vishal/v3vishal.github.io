@@ -24,8 +24,12 @@
        they work everywhere: GitHub Pages, file://, VS Code's embedded
        browser, or any sub-path hosting. */
     var FILE_MODE = window.location.protocol === 'file:';
-    var scriptTag = document.querySelector('script[src$="script.js"]');
-    var SITE_ROOT = scriptTag ? scriptTag.getAttribute('src').replace(/script\.js$/, '') : '';
+    var scriptTag = document.currentScript ||
+        document.querySelector('script[src*="script.js"]');
+    var scriptSrc = scriptTag ? (scriptTag.getAttribute('src') || '') : '';
+    /* Strip any ?v= cache-buster before deriving the root — a bare
+       $= selector match breaks the moment a query string is added. */
+    var SITE_ROOT = scriptSrc.split(/[?#]/)[0].replace(/script\.js$/, '');
 
     function localizeHref(href) {
         if (!href || href.charAt(0) !== '/') return href;
@@ -46,6 +50,41 @@
     }
 
     safe('links', function () { localizeLinks(document); });
+
+    /* ---------- speculative prefetch ----------
+       Fetch an internal page the moment its link is hovered (desktop)
+       or touched (mobile) — the navigation that follows ~100-300ms
+       later then comes straight from cache. Skips Save-Data users. */
+    safe('prefetch', function () {
+        if (FILE_MODE) return;
+        var conn = navigator.connection;
+        if (conn && (conn.saveData || /(^|-)2g/.test(conn.effectiveType || ''))) return;
+        var done = {};
+
+        function prefetch(a) {
+            var raw = a.getAttribute('href') || '';
+            if (!raw || raw.charAt(0) === '#') return;
+            var url;
+            try { url = new URL(raw, window.location.href); } catch (e) { return; }
+            if (url.origin !== window.location.origin) return;
+            if (done[url.pathname] || url.pathname === window.location.pathname) return;
+            done[url.pathname] = true;
+            var link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.as = 'document';
+            link.href = url.pathname;
+            document.head.appendChild(link);
+        }
+
+        function onIntent(e) {
+            var t = e.target;
+            var a = t && t.closest ? t.closest('a[href]') : null;
+            if (a) prefetch(a);
+        }
+
+        document.addEventListener('mouseover', onIntent);
+        document.addEventListener('touchstart', onIntent, { passive: true });
+    });
 
     var MARK_SVG =
         '<svg class="mark" viewBox="0 0 24 16" width="20" height="13" aria-hidden="true">' +
