@@ -2,27 +2,47 @@
    crypt // sec-ops  —  terminal brutalist stylesheet
    ============================================================ */
 
+@font-face {
+  font-family: 'Schibsted Grotesk';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('fonts/schibsted-grotesk-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Fragment Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/fragment-mono-latin.woff2') format('woff2');
+}
+
 :root {
+  --security:        #0f6b53;
+  --ai:              #2b49c8;
   --phosphor:        #d8ff5b;
   --phosphor-dim:    #8da735;
   --phosphor-bright: #f4ffb0;
   --amber:           #ffb000;
   --crimson:         #ff3838;
   --cobalt:          #5dc1ff;
-  --paper:           #f1ede0;
-  --ink:             #0a0a0a;
+  --paper:           #f7f8f7;
+  --ink:             #191c1b;
 
-  --rule:    rgba(216, 255, 91, 0.22);
-  --rule-2:  rgba(216, 255, 91, 0.45);
-  --rule-3:  rgba(216, 255, 91, 0.08);
+  --f-text:          'Schibsted Grotesk', system-ui, sans-serif;
+  --f-mono:          'Fragment Mono', ui-monospace, monospace;
 
-  --t-fast:   80ms steps(4, end);
-  --t-step:   120ms steps(6, end);
+  --rule:    rgba(15, 107, 83, 0.22);
+  --rule-2:  rgba(15, 107, 83, 0.45);
+  --rule-3:  rgba(15, 107, 83, 0.08);
+
+  --t-fast:   80ms ease;
+  --t-step:   120ms ease;
   --t-glide:  220ms cubic-bezier(.2,.7,.2,1);
 
-  --mono:    'JetBrains Mono', ui-monospace, 'Cascadia Mono', 'Consolas', monospace;
-  --display: 'VT323', 'JetBrains Mono', monospace;
-  --stencil: 'Major Mono Display', 'JetBrains Mono', monospace;
+  --mono:    var(--f-mono);
+  --display: var(--f-text);
+  --stencil: var(--f-text);
 
   --gutter: 16px;
   --char:   8px;
