@@ -221,7 +221,7 @@
         { id: 'crypt',          href: '/projects/crypt/',           label: 'crypt',          lines: 'sec',    x: 310, stop: [310, 61, 'sec'],   labelPos: [310, 44, 'middle'] },
         { id: 'agri-fincaster', href: '/projects/agri-fincaster/',  label: 'agri-fincaster', lines: 'ai',     x: 292, stop: [292, 150, 'ai'],   labelPos: [292, 172, 'middle'] },
         { id: 'monie',          href: '/projects/monie/',           label: 'monie',          lines: 'ai',     x: 386, stop: [386, 145, 'ai'],   labelPos: [386, 167, 'middle'] },
-        { id: 'writeups',       href: '/blog/',                     label: 'writeups',       lines: 'branch', x: 416, stop: [416, 28, 'sec'],  labelPos: [428, 22, 'start'] },
+        { id: 'writeups',       href: '/blog/',                     label: 'writeups',       lines: 'branch', x: 416, stop: [416, 28, 'sec'],  labelPos: [428, 12, 'start'] },
         { id: 'contact',        href: '/#contact',                  label: 'contact',        lines: 'sec ai', x: 468, dot: [468, 100], interchange: true, labelPos: [468, 128, 'middle'] }
     ];
 
@@ -266,14 +266,16 @@
         el.innerHTML =
             '<div class="sitemap__panel">' +
             '<header class="sitemap__bar"><span class="sitemap__title">site map</span>' +
+            '<button id="mapClose" class="sitemap__close" type="button" aria-label="Close site map">✕</button></header>' +
+            '<div class="sitemap__body">' +
             '<span class="sitemap__legend">' +
             '<span class="sitemap__legend-item"><svg class="thread thread--security" viewBox="0 0 14 8" width="14" height="8" aria-hidden="true"><path d="M1 6 C 5 6, 9 2, 13 2"/></svg>security line</span>' +
             '<span class="sitemap__legend-item"><svg class="thread thread--ai" viewBox="0 0 14 8" width="14" height="8" aria-hidden="true"><path d="M1 2 C 5 2, 9 6, 13 6"/></svg>ai line</span>' +
+            '<span class="sitemap__legend-item"><svg viewBox="0 0 14 8" width="14" height="8" aria-hidden="true"><path d="M1 6 L13 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2"/></svg>writeups branch</span>' +
+            '<span class="sitemap__legend-item"><svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>interchange</span>' +
             '</span>' +
-            '<button id="mapClose" class="sitemap__close" type="button" aria-label="Close site map">✕</button></header>' +
-            '<div class="sitemap__body">' +
             '<div class="sitemap__svg-wrap">' +
-            // viewBox extended from "0 0 560 210" to "0 -60 560 320" — some
+            // viewBox extended from "0 0 560 210" to "0 -60 560 365" — some
             // labels (projects, agri-fincaster, writeups) sit close to the
             // original y:0/210 edges, which is fine for horizontal desktop
             // text but not for the mobile rotated map: a rotated label's
@@ -284,9 +286,18 @@
             // one end. Extending the viewBox gives every rotated label
             // room without moving any station's actual coordinates. This
             // does make the desktop map render a bit taller (blank
-            // padding above/below, ~7:4 aspect instead of ~8:3) — checked
-            // visually and it reads as fine, not broken.
-            '<svg class="sitemap__svg" viewBox="0 -60 560 320" role="list" aria-label="Pages">' +
+            // padding above/below, ~560:365 aspect instead of ~8:3) —
+            // checked visually and it reads as fine, not broken.
+            //
+            // The extra height (320 -> 365, on top of the original 0-60
+            // bump) is specifically for agri-fincaster: giving it a
+            // non-centered text-anchor on mobile (see the CSS mobile
+            // block) to stop its label overlapping its own dot pushes
+            // its rotated bounding box further toward this edge than a
+            // centered anchor ever did — verified against a real render,
+            // not estimated, after a first attempt at 320 still clipped
+            // "agri-" off the front of the label.
+            '<svg class="sitemap__svg" viewBox="0 -60 560 365" role="list" aria-label="Pages">' +
             '<defs><linearGradient id="interchangeGrad" x1="0" y1="0" x2="1" y2="1">' +
             '<stop offset="0%" stop-color="var(--security)"/><stop offset="100%" stop-color="var(--ai)"/>' +
             '</linearGradient></defs>' +
@@ -429,10 +440,18 @@
                 if (id === hereId) { e.preventDefault(); closeMap(); return; }
                 // The packet ride only makes sense from the 'home' origin;
                 // elsewhere (or with modifiers / reduced motion) navigate plainly.
-                if (prefersReducedMotion || hereId !== 'home' || e.metaKey || e.ctrlKey || e.shiftKey) return;
+                // Close the map regardless of which branch runs: hash-only
+                // hrefs (e.g. '/#contact') navigate without unloading the
+                // document, so without this the dialog stayed open on top
+                // of the section you just "went to."
+                if (prefersReducedMotion || hereId !== 'home' || e.metaKey || e.ctrlKey || e.shiftKey) {
+                    closeMap();
+                    return;
+                }
                 e.preventDefault();
                 var station = stationById(id);
                 ridePacket(station, function () {
+                    closeMap();
                     window.location.href = a.getAttribute('href');
                 });
             });

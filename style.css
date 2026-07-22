@@ -974,22 +974,24 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
     -webkit-overflow-scrolling: touch;
 }
 .sitemap__legend {
-    margin-left: auto;
-    display: inline-flex;
-    gap: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.1rem;
+    padding: 0.7rem 1.25rem 0;
     color: var(--ink-muted);
+    font-family: var(--f-mono);
+    font-size: 0.72rem;
 }
 .sitemap__legend-item { display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
 .sitemap__close {
     display: grid;
     place-items: center;
     width: 1.75rem; height: 1.75rem;
-    margin-left: 0.5rem;
+    margin-left: auto;
     border-radius: 50%;
     color: var(--ink-muted);
     flex-shrink: 0;
 }
-@media (max-width: 640px) { .sitemap__close { margin-left: auto; } }
 .sitemap__close:hover { color: var(--ink); background: var(--surface); }
 
 .sitemap__svg-wrap {
@@ -1100,7 +1102,6 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
     .sitemap__label { transform: none; }
 }
 @media (max-width: 640px) {
-    .sitemap__legend { display: none; }
     .sitemap__label {
         font-size: 13px;
     }
@@ -1109,13 +1110,31 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
        dialog actually has (viewport minus its own padding/border), so a
        390-430px phone gets a noticeably bigger map instead of the same
        capped size as a 360px one. Height is the same expression scaled
-       by the viewBox ratio (560:320 = 7:4 — extended from the original
+       by the viewBox ratio (560:365 — extended from the original
        560:210 so rotated labels have vertical clearance, see script.js),
        so the two always match exactly regardless of viewport width. */
     .sitemap__svg-wrap {
         position: relative;
-        width: calc(100vw - 6rem);
-        height: calc((100vw - 6rem) * 7 / 4);
+        /* Sizing this from width alone (viewport minus side padding)
+           made the map overflow the dialog's actual vertical budget on
+           anything shorter/squarer than a tall flagship phone — the
+           panel has a max-height (see .sitemap__panel) but the diagram
+           was sized with zero awareness of it, forcing .sitemap__body
+           to scroll internally, which it should only ever do as a
+           last-resort fallback. --map-w-budget is the full available
+           width (dialog side padding is 2 × var(--pad), pinned to its
+           1.25rem floor below ~500px viewports, + ~2px panel border).
+           --map-h-budget is what's left for the diagram after the bar,
+           legend and readout rows (measured ~50px/59px/43px on a real
+           render) plus a safety margin. width/height each take the
+           SMALLER of the two budgets (scaled by the fixed 560:365
+           aspect), so the map is "contain"-fit instead of overflowing
+           whichever axis is tighter. */
+        --map-w-budget: calc(100vw - 2.75rem);
+        --map-h-budget: calc(100vh - clamp(4rem, 14vh, 8rem) - 11.5rem);
+        --map-h-budget: calc(100dvh - clamp(4rem, 14dvh, 8rem) - 11.5rem);
+        width: min(var(--map-w-budget), calc(var(--map-h-budget) * 365 / 560));
+        height: min(calc(var(--map-w-budget) * 560 / 365), var(--map-h-budget));
         margin: 0 auto;
         overflow: visible;
     }
@@ -1123,8 +1142,12 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
         position: absolute;
         top: 50%;
         left: 50%;
-        width: calc((100vw - 6rem) * 7 / 4);
-        height: calc(100vw - 6rem);
+        /* Swapped relative to the wrap on purpose: this element is what
+           actually gets rotated 90°, so its own width/height must equal
+           the wrap's height/width for the rotated result to fill the
+           wrap's box exactly. */
+        width: min(calc(var(--map-w-budget) * 560 / 365), var(--map-h-budget));
+        height: min(var(--map-w-budget), calc(var(--map-h-budget) * 365 / 560));
         /* The universal `img, svg { max-width: 100% }` reset earlier in
            this file was silently capping this back down to the wrap's
            width (its containing block) — max-width is a separate
@@ -1141,8 +1164,29 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
        and lines carry more visual weight, not just more empty space
        around them. */
     .sitemap__stop { r: 8px; }
-    .sitemap__pill { width: 20px; height: 50px; y: 79px; }
+    /* Only bump width for a chunkier touch target — height/y come from
+       the inline SVG attributes (same as desktop), sized to actually
+       bracket both the sec and ai line y-positions at each interchange.
+       A previous mobile override also shrank height/y here, which made
+       the pill span too short to reach either line — it rendered as a
+       disconnected outline floating in blank space instead of visually
+       bridging the two threads. */
+    .sitemap__pill { width: 20px; }
     .sitemap__line { stroke-width: 5px; }
+    /* Each of these labels sits close enough to its OWN station's dot
+       (in the pre-rotation coordinate system) that centering the text
+       on that same point — fine on desktop, where the two are read
+       vertically apart — puts the dot right on top of a letter once
+       rotated, since text-anchor:middle straddles the rotated column
+       the dot also sits on. Anchoring toward whichever side the text
+       already leans (measured via real renders, not transform math —
+       that reasoning has been wrong before on this exact diagram)
+       clears the dot without moving any coordinate, so desktop is
+       untouched. */
+    .sitemap__station[data-station="crypt"] .sitemap__label { text-anchor: start; }
+    .sitemap__station[data-station="agri-fincaster"] .sitemap__label { text-anchor: end; }
+    .sitemap__station[data-station="monie"] .sitemap__label { text-anchor: end; }
+    .sitemap__station[data-station="contact"] .sitemap__label { text-anchor: end; }
 }
 
 /* ---------- terminal (glass panel) ---------- */
