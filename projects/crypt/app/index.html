@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" data-color-scheme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>crypt // sec-ops</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=VT323&family=Major+Mono+Display&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+    <div class="scanlines" aria-hidden="true"></div>
+    <div class="noise" aria-hidden="true"></div>
+
+    <div class="app">
+
+        <header class="topbar">
+            <div class="topbar-cell brand">
+                <span class="brand-mark">█▓░</span>
+                <span class="brand-name">CRYPT</span>
+                <span class="brand-sep">//</span>
+                <span class="brand-sub">SEC-OPS</span>
+            </div>
+            <div class="topbar-cell meter">
+                <span class="meter-label">INTEGRITY</span>
+                <span class="meter-bar" id="integrity-bar" data-value="0">▓▓▓▓▓▓▓▓░░</span>
+                <span class="meter-value" id="integrity-value">00</span>
+            </div>
+            <div class="topbar-cell uptime">
+                <span class="topbar-key">UPTIME</span>
+                <span id="uptime-clock">00:00:00</span>
+            </div>
+            <div class="topbar-cell threat">
+                <span class="threat-dot threat-low" id="threat-dot"></span>
+                <span class="threat-label" id="threat-label">LOW</span>
+            </div>
+            <div class="topbar-cell actions">
+                <a class="iconbtn" href="../../index.html" title="Back to Portfolio">[ ↩ ]</a>
+                <button class="iconbtn" id="theme-toggle" title="Toggle theme">[ ◐ ]</button>
+                <button class="iconbtn" id="mobile-nav-btn" title="Menu">[ ≡ ]</button>
+            </div>
+        </header>
+
+        <div class="layout">
+
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-heading">┌─ CORE TOOLS ──────┐</div>
+                    <nav>
+                        <a href="#dashboard" class="navitem active" data-tool="dashboard">
+                            <span class="nav-glyph">▸</span><span class="nav-key">01</span><span class="nav-name">dashboard</span>
+                        </a>
+                        <a href="#encryption" class="navitem" data-tool="encryption">
+                            <span class="nav-glyph">▸</span><span class="nav-key">02</span><span class="nav-name">encryption</span>
+                        </a>
+                        <a href="#password" class="navitem" data-tool="password">
+                            <span class="nav-glyph">▸</span><span class="nav-key">03</span><span class="nav-name">password lab</span>
+                        </a>
+                        <a href="#hash" class="navitem" data-tool="hash">
+                            <span class="nav-glyph">▸</span><span class="nav-key">04</span><span class="nav-name">hash inspect</span>
+                        </a>
+                    </nav>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-heading">├─ OFFENSIVE ───────┤</div>
+                    <nav>
+                        <a href="#threat" class="navitem" data-tool="threat">
+                            <span class="nav-glyph">▸</span><span class="nav-key">05</span><span class="nav-name">threat sim</span>
+                        </a>
+                        <a href="#steganography" class="navitem" data-tool="steganography">
+                            <span class="nav-glyph">▸</span><span class="nav-key">06</span><span class="nav-name">steganograph</span>
+                        </a>
+                        <a href="#network" class="navitem" data-tool="network">
+                            <span class="nav-glyph">▸</span><span class="nav-key">07</span><span class="nav-name">net forensics</span>
+                        </a>
+                    </nav>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-heading">├─ SYSTEM ──────────┤</div>
+                    <nav>
+                        <a href="#reports" class="navitem" data-tool="reports">
+                            <span class="nav-glyph">▸</span><span class="nav-key">08</span><span class="nav-name">reports</span>
+                        </a>
+                        <a href="#settings" class="navitem" data-tool="settings">
+                            <span class="nav-glyph">▸</span><span class="nav-key">09</span><span class="nav-name">settings</span>
+                        </a>
+                        <a href="#jwt" class="navitem" data-tool="jwt">
+                            <span class="nav-glyph">▸</span><span class="nav-key">10</span><span class="nav-name">jwt inspect</span>
+                        </a>
+                    </nav>
+                </div>
+
+                <div class="sidebar-footer">
+                    <div class="sidebar-heading">└─ TELEMETRY ───────┘</div>
+                    <div class="tele-row"><span>ops_run</span><span id="tele-ops">000</span></div>
+                    <div class="tele-row"><span>threats</span><span id="tele-threats">000</span></div>
+                    <div class="tele-row"><span>session</span><span id="tele-session">cold</span></div>
+                    <div class="caret-line"><span class="caret">█</span> ready_</div>
+                </div>
+            </aside>
+
+            <main class="content">
+
+                <section id="dashboard-view" class="view active">
+                    <div class="view-headerline">
+                        <h1 class="view-title">// dashboard</h1>
+                        <div class="view-meta" id="dashboard-meta">node: localhost · scope: all</div>
+                        <div class="view-actions">
+                            <button class="brkbtn" id="dashboard-refresh">[ refresh ]</button>
+                            <button class="brkbtn" id="dashboard-clear">[ clear log ]</button>
+                        </div>
+                    </div>
+
+                    <div class="dash-grid">
+
+                        <article class="panel panel-score">
+                            <header class="panel-head">
+                                <span class="panel-tag">[ 01 ]</span>
+                                <h2>posture</h2>
+                                <span class="panel-state" id="score-state">--</span>
+                            </header>
+                            <div class="score-block">
+                                <div class="score-big" id="score-big">--</div>
+                                <div class="score-small">/100</div>
+                            </div>
+                            <div class="score-bar" id="score-bar"></div>
+                            <ul class="score-flags" id="score-flags">
+                                <li class="flag flag-pending"><span class="flag-mark">[·]</span> awaiting signal</li>
+                            </ul>
+                        </article>
+
+                        <article class="panel panel-threats">
+                            <header class="panel-head">
+                                <span class="panel-tag">[ 02 ]</span>
+                                <h2>threat ledger</h2>
+                                <span class="panel-state" id="ledger-state">live</span>
+                            </header>
+                            <table class="data-table">
+                                <thead>
+                                    <tr><th>sev</th><th>class</th><th class="num">n</th><th class="num">trend</th></tr>
+                                </thead>
+                                <tbody id="threat-table">
+                                    <tr><td><span class="sev sev-crit">CRIT</span></td><td>critical</td><td class="num" id="th-crit">000</td><td class="num">────</td></tr>
+                                    <tr><td><span class="sev sev-high">HIGH</span></td><td>elevated</td><td class="num" id="th-high">000</td><td class="num">────</td></tr>
+                                    <tr><td><span class="sev sev-med">MED&nbsp;</span></td><td>moderate</td><td class="num" id="th-med">000</td><td class="num">────</td></tr>
+                                    <tr><td><span class="sev sev-low">LOW&nbsp;</span></td><td>informational</td><td class="num" id="th-low">000</td><td class="num">────</td></tr>
+                                </tbody>
+                            </table>
+                        </article>
+
+                        <article class="panel panel-counters">
+                            <header class="panel-head">
+                                <span class="panel-tag">[ 03 ]</span>
+                                <h2>operation counters</h2>
+                                <span class="panel-state">cumulative</span>
+                            </header>
+                            <dl class="counter-list">
+                                <div><dt>encryptions</dt><dd id="ctr-encrypt">0000</dd></div>
+                                <div><dt>passwords analysed</dt><dd id="ctr-pwd">0000</dd></div>
+                                <div><dt>hash inspections</dt><dd id="ctr-hash">0000</dd></div>
+                                <div><dt>threat simulations</dt><dd id="ctr-threat">0000</dd></div>
+                                <div><dt>steg ops</dt><dd id="ctr-steg">0000</dd></div>
+                                <div><dt>last op</dt><dd id="ctr-last">—</dd></div>
+                            </dl>
+                        </article>
+
+                        <article class="panel panel-spark">
+                            <header class="panel-head">
+                                <span class="panel-tag">[ 04 ]</span>
+                                <h2>activity spectrum</h2>
+                                <span class="panel-state">24h ▼</span>
+                            </header>
+                            <pre class="sparkbox" id="sparkbox">
+ enc   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0
+ pwd   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0
+ hash  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0
+ thrt  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0
+ steg  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0
+                            </pre>
+                        </article>
+
+                        <article class="panel panel-feed">
+                            <header class="panel-head">
+                                <span class="panel-tag">[ 05 ]</span>
+                                <h2>event feed</h2>
+                                <span class="panel-state">tail -f</span>
+                            </header>
+                            <ol class="feed" id="event-feed">
+                                <li class="feed-empty">// no events. interact with any tool to populate.</li>
+                            </ol>
+                        </article>
+
+                    </div>
+                </section>
+
+                <section id="encryption-view" class="view"></section>
+                <section id="password-view" class="view"></section>
+                <section id="hash-view" class="view"></section>
+                <section id="threat-view" class="view"></section>
+                <section id="steganography-view" class="view"></section>
+                <section id="network-view" class="view"></section>
+                <section id="reports-view" class="view"></section>
+                <section id="settings-view" class="view"></section>
+                <section id="jwt-view" class="view"></section>
+
+            </main>
+        </div>
+
+        <footer class="cmdbar">
+            <span class="cmd-prompt">crypt$</span>
+            <span class="cmd-hint" id="cmd-hint">
+                <span class="cmd-key">g</span> generate · <span class="cmd-key">a</span> analyze · <span class="cmd-key">d</span> deep scan · <span class="cmd-key">t</span> toggle theme · <span class="cmd-key">/</span> focus input
+            </span>
+            <span class="cmd-state" id="cmd-state">idle</span>
+        </footer>
+
+        <div class="overlay" id="overlay" hidden>
+            <pre class="overlay-art" id="overlay-art">
+┌──────────────────────────────────┐
+│  WORKING                         │
+│  ████████░░░░░░░░░░░░░░░░░░░░    │
+│                                  │
+└──────────────────────────────────┘
+            </pre>
+            <div class="overlay-text" id="overlay-text">processing</div>
+        </div>
+
+        <div class="toaster" id="toaster" aria-live="polite"></div>
+
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/rockyou-top.js"></script>
+    <script src="js/modules/utils.js"></script>
+    <script src="js/modules/log.js"></script>
+    <script src="js/modules/ui.js"></script>
+    <script src="js/modules/dashboard.js"></script>
+    <script src="js/modules/encryption.js"></script>
+    <script src="js/modules/password.js"></script>
+    <script src="js/modules/threat.js"></script>
+    <script src="js/modules/hash.js"></script>
+    <script src="js/modules/steganography.js"></script>
+    <script src="js/modules/network.js"></script>
+    <script src="js/modules/reports.js"></script>
+    <script src="js/modules/settings.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
