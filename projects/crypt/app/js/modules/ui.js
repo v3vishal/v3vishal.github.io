@@ -6,26 +6,32 @@ App.ui = (() => {
 
   let toastSeq = 0;
 
-  // ----- Theme -----
-  const THEME_KEY = 'crypt.theme';
-  const SCAN_KEY = 'crypt.scanlines';
+  /* ----- Theme -----
+     Deliberately the SAME attribute and the SAME localStorage key the
+     portfolio uses (`data-theme` / `theme`). The app used to keep its own
+     `data-color-scheme` + `crypt.theme` pair, so choosing dark on the site
+     and clicking through to the app silently reverted you to whatever the
+     app had stored. One key means one preference across the whole domain. */
+  const THEME_KEY = 'theme';
 
   const setTheme = (theme) => {
-    document.documentElement.setAttribute('data-color-scheme', theme);
-    localStorage.setItem(THEME_KEY, theme);
-    const icon = $('#theme-toggle');
-    if (icon) icon.textContent = theme === 'dark' ? '[ ◐ ]' : '[ ◑ ]';
+    document.documentElement.setAttribute('data-theme', theme);
+    try { localStorage.setItem(THEME_KEY, theme); } catch (e) { /* private mode */ }
+    const btn = $('#theme-toggle');
+    if (btn) {
+      btn.textContent = theme === 'dark' ? '☀' : '☾';
+      btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+    }
   };
 
   const toggleTheme = () => {
-    const cur = document.documentElement.getAttribute('data-color-scheme') || 'dark';
+    const cur = document.documentElement.getAttribute('data-theme') || 'light';
     setTheme(cur === 'dark' ? 'light' : 'dark');
   };
 
-  const setScanlines = (on) => {
-    document.documentElement.style.setProperty('--scan-opacity', on ? '.07' : '0');
-    localStorage.setItem(SCAN_KEY, on ? '1' : '0');
-  };
+  /* The CRT scanline overlay is gone; kept as a no-op so settings.js and
+     any saved preference referencing it cannot throw. */
+  const setScanlines = () => {};
 
   // ----- Sidebar mobile -----
   const toggleSidebar = () => {
@@ -92,8 +98,6 @@ App.ui = (() => {
     const theme = localStorage.getItem(THEME_KEY)
       || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
     setTheme(theme);
-    const scan = localStorage.getItem(SCAN_KEY);
-    if (scan === '0') setScanlines(false);
 
     $('#theme-toggle')?.addEventListener('click', toggleTheme);
     $('#mobile-nav-btn')?.addEventListener('click', toggleSidebar);

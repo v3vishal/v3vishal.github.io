@@ -561,8 +561,42 @@
 
         function scrollDown() { term.screen.scrollTop = term.screen.scrollHeight; }
 
+        /* ---- keyboard-aware placement (phones) ----
+           position:fixed resolves against the layout viewport, which does not
+           shrink when the on-screen keyboard opens — so the panel ends up
+           behind the keyboard the moment you focus the input, i.e. precisely
+           when you need to see it. visualViewport reports what is genuinely
+           visible; the difference between the two is the keyboard. Listeners
+           are attached only while the terminal is open, so this costs nothing
+           the rest of the time, and the whole block no-ops on desktop and on
+           browsers without visualViewport. */
+        var vv = window.visualViewport;
+        function syncKeyboardInset() {
+            if (!vv) return;
+            var gap = window.innerHeight - vv.height - vv.offsetTop;
+            /* Small deltas are just URL-bar chrome, not a keyboard. */
+            var inset = gap > 60 ? Math.round(gap) : 0;
+            term.rootEl.style.setProperty('--kb-inset', inset + 'px');
+            term.rootEl.style.setProperty('--kb-vh', Math.round(vv.height) + 'px');
+            if (inset) scrollDown();
+        }
+        function watchKeyboard(on) {
+            if (!vv) return;
+            if (on) {
+                vv.addEventListener('resize', syncKeyboardInset);
+                vv.addEventListener('scroll', syncKeyboardInset);
+                syncKeyboardInset();
+            } else {
+                vv.removeEventListener('resize', syncKeyboardInset);
+                vv.removeEventListener('scroll', syncKeyboardInset);
+                term.rootEl.style.removeProperty('--kb-inset');
+                term.rootEl.style.removeProperty('--kb-vh');
+            }
+        }
+
         function openTerm() {
             term.rootEl.hidden = false;
+            watchKeyboard(true);
             requestAnimationFrame(function () { term.rootEl.classList.add('is-open'); });
             termToggle.setAttribute('aria-expanded', 'true');
             if (!welcomed) {
@@ -577,6 +611,7 @@
         function closeTerm() {
             term.rootEl.classList.remove('is-open');
             termToggle.setAttribute('aria-expanded', 'false');
+            watchKeyboard(false);
             var hide = function () { term.rootEl.hidden = true; };
             prefersReducedMotion ? hide() : setTimeout(hide, 300);
             termToggle.focus();
@@ -838,6 +873,24 @@
        scroll rail, packet cursor, click pings, cursor-revealed grid,
        glow borders, magnetic buttons, damped tilt.
        ============================================================ */
+    /* All of these effects used to be independent listeners: one pointermove
+       on the document, one per glow card, one per magnetic button, one per
+       tiltable project — each doing its own getBoundingClientRect() and its
+       own style writes, synchronously, on every single event.
+
+       That is fine at 60Hz. It is not fine at 144/240Hz, where pointermove
+       fires several times more often, and where every extra read-after-write
+       in the same handler risks a forced synchronous layout. The site felt
+       "capped at 60" because the main thread was doing per-event layout work
+       instead of per-frame work.
+
+       Everything below is now driven by ONE listener that records state and
+       ONE rAF that applies it, split into a read phase and a write phase so
+       measurement never interleaves with mutation. Pointer events beyond the
+       first in a frame cost nothing but two number assignments, so the work
+       is now bounded by refresh rate rather than by mouse polling rate.
+       The loop also parks itself once the packet stops moving, so an idle
+       page schedules no frames at all. */
     safe('pointer-fx', function () {
         if (!FINE_POINTER || prefersReducedMotion) return;
         root.classList.add('pointer-fx');
@@ -847,17 +900,6 @@
         rail.className = 'scroll-rail';
         rail.setAttribute('aria-hidden', 'true');
         document.body.appendChild(rail);
-        var railRaf = null;
-        function updateRail() {
-            var h = document.documentElement;
-            var max = h.scrollHeight - h.clientHeight;
-            rail.style.transform = 'scaleX(' + (max > 0 ? h.scrollTop / max : 0) + ')';
-            railRaf = null;
-        }
-        window.addEventListener('scroll', function () {
-            if (!railRaf) railRaf = requestAnimationFrame(updateRail);
-        }, { passive: true });
-        updateRail();
 
         /* cursor-revealed dot grid */
         var ambient = document.querySelector('.ambient');
@@ -875,34 +917,137 @@
         dot.style.opacity = '0';
         document.body.appendChild(dot);
 
-        var mx = -100, my = -100, px = -100, py = -100, moved = false;
+        var GLOW_SEL = '.project, .skills__group';
+        var MAG_SEL = '.track-chip, .map-toggle, .term-toggle, .theme-toggle, .copy-btn';
+        document.querySelectorAll(GLOW_SEL).forEach(function (c) { c.classList.add('glow-card'); });
+        document.querySelectorAll(MAG_SEL).forEach(function (b) { b.classList.add('magnetic'); });
+
+        var mx = -100, my = -100, px = -100, py = -100;
+        var moved = false, pointerDirty = false, scrollDirty = true, running = false;
+        var hoverCard = null, hoverBtn = null, ringKey = '';
+
+        function schedule() {
+            if (running) return;
+            running = true;
+            requestAnimationFrame(frame);
+        }
 
         document.addEventListener('pointermove', function (e) {
             if (e.pointerType && e.pointerType !== 'mouse') return;
             mx = e.clientX; my = e.clientY;
-            if (!moved) { moved = true; px = mx; py = my; dot.style.opacity = ''; }
-            if (grid) {
-                grid.style.setProperty('--mx', mx + 'px');
-                grid.style.setProperty('--my', my + 'px');
-            }
-            var t = e.target && e.target.closest ? e.target.closest('a, button, input, [role="button"]') : null;
-            dot.classList.toggle('is-ring', !!t);
-            dot.classList.remove('is-sec', 'is-ai');
-            if (t) {
-                var tracked = e.target.closest('[data-track], .thread--security, .thread--ai, .track-chip');
-                var v = tracked && tracked.getAttribute ? (tracked.getAttribute('data-track') || '') : '';
-                if (v === 'security') dot.classList.add('is-sec');
-                else if (v === 'ai') dot.classList.add('is-ai');
-            }
+            if (!moved) { moved = true; px = mx; py = my; }
+            /* closest() walks the DOM but touches no geometry, so it is safe
+               to do here; everything that measures waits for the frame. */
+            var interactive = e.target && e.target.closest
+                ? e.target.closest('a, button, input, [role="button"]') : null;
+            /* The track chips carry `data-track-toggle`, not `data-track`, so
+               reading only the latter meant the two chips — the one place the
+               security/AI split is the entire point of the control — never
+               actually tinted the cursor. Both attributes are read now. */
+            var tracked = interactive ? e.target.closest('[data-track], [data-track-toggle]') : null;
+            var trackVal = tracked && tracked.getAttribute
+                ? (tracked.getAttribute('data-track') || tracked.getAttribute('data-track-toggle') || '')
+                : '';
+            ringKey = interactive ? (trackVal === 'security' ? 'sec' : trackVal === 'ai' ? 'ai' : 'on') : '';
+            hoverCard = e.target && e.target.closest ? e.target.closest(GLOW_SEL) : null;
+            hoverBtn = e.target && e.target.closest ? e.target.closest(MAG_SEL) : null;
+            pointerDirty = true;
+            schedule();
         }, { passive: true });
 
-        (function trail() {
-            px += (mx - px) * 0.22;
-            py += (my - py) * 0.22;
-            dot.style.left = px + 'px';
-            dot.style.top = py + 'px';
-            requestAnimationFrame(trail);
-        })();
+        window.addEventListener('scroll', function () { scrollDirty = true; schedule(); }, { passive: true });
+        window.addEventListener('resize', function () { scrollDirty = true; schedule(); }, { passive: true });
+
+        /* Elements the previous frame transformed, so they can be reset the
+           moment the pointer leaves without needing per-element listeners. */
+        var lastCard = null, lastBtn = null, lastTilt = null, appliedRing = null;
+
+        function frame() {
+            running = false;
+
+            /* ---- READ phase: every measurement happens up here, before a
+               single style write, so nothing can force a synchronous
+               relayout mid-frame. ---- */
+            var cardRect = null, btnRect = null, railScale = null;
+            if (pointerDirty) {
+                if (hoverCard) cardRect = hoverCard.getBoundingClientRect();
+                if (hoverBtn) btnRect = hoverBtn.getBoundingClientRect();
+            }
+            if (scrollDirty) {
+                var h = document.documentElement;
+                var max = h.scrollHeight - h.clientHeight;
+                railScale = max > 0 ? h.scrollTop / max : 0;
+                scrollDirty = false;
+            }
+
+            /* ---- WRITE phase ---- */
+            if (railScale !== null) rail.style.transform = 'scaleX(' + railScale + ')';
+
+            if (pointerDirty) {
+                if (grid) {
+                    grid.style.setProperty('--mx', mx + 'px');
+                    grid.style.setProperty('--my', my + 'px');
+                }
+                /* Only touch classList when the state actually changed —
+                   the old code removed and re-added classes on every event. */
+                if (appliedRing !== ringKey) {
+                    dot.classList.toggle('is-ring', ringKey !== '');
+                    dot.classList.toggle('is-sec', ringKey === 'sec');
+                    dot.classList.toggle('is-ai', ringKey === 'ai');
+                    appliedRing = ringKey;
+                }
+                if (lastCard && lastCard !== hoverCard) lastCard.style.transform = '';
+                if (lastBtn && lastBtn !== hoverBtn) lastBtn.style.transform = '';
+                if (lastTilt && lastTilt !== hoverCard) lastTilt.style.transform = '';
+
+                if (hoverCard && cardRect) {
+                    hoverCard.style.setProperty('--gx', (mx - cardRect.left) + 'px');
+                    hoverCard.style.setProperty('--gy', (my - cardRect.top) + 'px');
+                    /* damped tilt, project rows only */
+                    if (hoverCard.classList.contains('project') && cardRect.width && cardRect.height) {
+                        var fx = (mx - cardRect.left) / cardRect.width - 0.5;
+                        var fy = (my - cardRect.top) / cardRect.height - 0.5;
+                        hoverCard.style.transform = 'perspective(700px) rotateX(' +
+                            (-fy * 1.5).toFixed(2) + 'deg) rotateY(' + (fx * 2).toFixed(2) + 'deg)';
+                        lastTilt = hoverCard;
+                    }
+                }
+                if (hoverBtn && btnRect) {
+                    var relX = mx - btnRect.left - btnRect.width / 2;
+                    var relY = my - btnRect.top - btnRect.height / 2;
+                    hoverBtn.style.transform = 'translate(' +
+                        (relX * 0.2).toFixed(1) + 'px,' + (relY * 0.28).toFixed(1) + 'px)';
+                }
+                lastCard = hoverCard;
+                lastBtn = hoverBtn;
+                pointerDirty = false;
+            }
+
+            /* packet easing — `translate`, never left/top: left/top are layout
+               properties and writing them per frame forced a full document
+               layout every frame (measured, then measured again at 0.00). */
+            if (moved) {
+                var dx = mx - px, dy = my - py;
+                px += dx * 0.22;
+                py += dy * 0.22;
+                dot.style.translate = px + 'px ' + py + 'px';
+                if (dot.style.opacity !== '') dot.style.opacity = '';
+                /* Keep animating only while there is visible distance left;
+                   below half a pixel nothing more would be drawn. */
+                if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) schedule();
+            }
+        }
+
+        /* The pointer can leave for the browser chrome without ever emitting a
+           move over another element, which would otherwise strand the last
+           hovered card mid-tilt. The per-element pointerleave listeners this
+           replaces covered that case; this one covers it once. */
+        document.addEventListener('pointerleave', function () {
+            hoverCard = hoverBtn = null;
+            ringKey = '';
+            pointerDirty = true;
+            schedule();
+        }, { passive: true });
 
         /* click ping */
         document.addEventListener('pointerdown', function (e) {
@@ -915,38 +1060,7 @@
             setTimeout(function () { if (ping.parentNode) ping.parentNode.removeChild(ping); }, 500);
         }, { passive: true });
 
-        /* glow borders */
-        document.querySelectorAll('.project, .skills__group').forEach(function (card) {
-            card.classList.add('glow-card');
-            card.addEventListener('pointermove', function (e) {
-                var r = card.getBoundingClientRect();
-                card.style.setProperty('--gx', (e.clientX - r.left) + 'px');
-                card.style.setProperty('--gy', (e.clientY - r.top) + 'px');
-            }, { passive: true });
-        });
-
-        /* magnetic buttons */
-        document.querySelectorAll('.track-chip, .map-toggle, .term-toggle, .theme-toggle, .copy-btn').forEach(function (btn) {
-            btn.classList.add('magnetic');
-            btn.addEventListener('pointermove', function (e) {
-                var r = btn.getBoundingClientRect();
-                var relX = e.clientX - r.left - r.width / 2;
-                var relY = e.clientY - r.top - r.height / 2;
-                btn.style.transform = 'translate(' + (relX * 0.2).toFixed(1) + 'px,' + (relY * 0.28).toFixed(1) + 'px)';
-            }, { passive: true });
-            btn.addEventListener('pointerleave', function () { btn.style.transform = ''; });
-        });
-
-        /* damped tilt on project rows */
-        document.querySelectorAll('.project').forEach(function (card) {
-            card.addEventListener('pointermove', function (e) {
-                var r = card.getBoundingClientRect();
-                var fx = (e.clientX - r.left) / r.width - 0.5;
-                var fy = (e.clientY - r.top) / r.height - 0.5;
-                card.style.transform = 'perspective(700px) rotateX(' + (-fy * 1.5).toFixed(2) + 'deg) rotateY(' + (fx * 2).toFixed(2) + 'deg)';
-            }, { passive: true });
-            card.addEventListener('pointerleave', function () { card.style.transform = ''; });
-        });
+        schedule();
     });
 
 })();

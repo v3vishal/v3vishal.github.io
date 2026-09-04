@@ -127,7 +127,7 @@ App.encryption = (() => {
             <label class="field-label">key / passphrase</label>
             <div class="input-row">
               <input class="input" type="password" id="enc-key" placeholder="passphrase (caesar: a number)">
-              <button class="brkbtn" id="enc-keygen">[ gen ]</button>
+              <button class="brkbtn" id="enc-keygen">gen</button>
             </div>
           </div>
 
@@ -173,10 +173,10 @@ App.encryption = (() => {
               <textarea class="textarea code" id="enc-output" readonly placeholder="result appears here"></textarea>
             </div>
             <div class="flex gap">
-              <button class="brkbtn primary" id="enc-run">[ run ]</button>
-              <button class="brkbtn" id="enc-copy">[ copy output ]</button>
-              <button class="brkbtn" id="enc-download" disabled>[ download .bin ]</button>
-              <button class="brkbtn danger" id="enc-clear">[ clear ]</button>
+              <button class="brkbtn primary" id="enc-run">run</button>
+              <button class="brkbtn" id="enc-copy">copy output</button>
+              <button class="brkbtn" id="enc-download" disabled>download .bin</button>
+              <button class="brkbtn danger" id="enc-clear">clear</button>
             </div>
           </div>
 

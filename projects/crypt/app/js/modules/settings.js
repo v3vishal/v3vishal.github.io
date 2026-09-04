@@ -26,16 +26,8 @@ App.settings = (() => {
           <div class="field">
             <label class="field-label">colour scheme</label>
             <div class="group-row">
-              <label class="radio"><input type="radio" name="s-theme" value="dark"><span class="glyph"></span><span class="label">dark · phosphor</span></label>
-              <label class="radio"><input type="radio" name="s-theme" value="light"><span class="glyph"></span><span class="label">light · paper</span></label>
-            </div>
-          </div>
-
-          <div class="field">
-            <label class="field-label">CRT scanlines</label>
-            <div class="group-row">
-              <label class="radio"><input type="radio" name="s-scan" value="on"><span class="glyph"></span><span class="label">on</span></label>
-              <label class="radio"><input type="radio" name="s-scan" value="off"><span class="glyph"></span><span class="label">off</span></label>
+              <label class="radio"><input type="radio" name="s-theme" value="dark"><span class="glyph"></span><span class="label">dark</span></label>
+              <label class="radio"><input type="radio" name="s-theme" value="light"><span class="glyph"></span><span class="label">light</span></label>
             </div>
           </div>
 
@@ -57,7 +49,7 @@ App.settings = (() => {
               <div class="kv"><span class="kv-k">storage backend</span><span class="kv-v">localStorage</span></div>
             </div>
             <div style="height:12px"></div>
-            <button class="brkbtn danger block" id="s-wipe">[ wipe all local data ]</button>
+            <button class="brkbtn danger block" id="s-wipe">wipe all local data</button>
           </div>
 
           <div class="panel">
@@ -73,8 +65,10 @@ crypt // sec-ops
   philosophy reading about ciphers teaches definitions;
              implementing them teaches why they fail.
   engine     WebCrypto (AES-256-GCM) · zxcvbn entropy heuristic
-  design     terminal brutalist · Schibsted Grotesk + Fragment Mono
-  storage    localStorage only · 100% offline, zero telemetry
+             MD5 implemented in-page (RFC 1321) — WebCrypto
+             refuses to ship it, which is rather the point
+  design     shares the portfolio's type and palette
+  storage    localStorage only · no network calls, no telemetry
 
 a security toolkit built to demystify cryptography
 through hands-on implementation and simulation.</pre>
@@ -88,20 +82,13 @@ through hands-on implementation and simulation.</pre>
   };
 
   const bind = () => {
-    const cur = document.documentElement.getAttribute('data-color-scheme') || 'dark';
+    const cur = document.documentElement.getAttribute('data-theme') || 'light';
     document.querySelector(`input[name="s-theme"][value="${cur}"]`)?.setAttribute('checked', 'true');
     document.querySelector(`input[name="s-theme"][value="${cur}"]`).checked = true;
-
-    const scanOn = (getComputedStyle(document.documentElement).getPropertyValue('--scan-opacity').trim() !== '0');
-    document.querySelector(`input[name="s-scan"][value="${scanOn ? 'on' : 'off'}"]`).checked = true;
 
     document.querySelectorAll('input[name="s-theme"]').forEach(r => {
       r.addEventListener('change', e => App.ui.setTheme(e.target.value));
     });
-    document.querySelectorAll('input[name="s-scan"]').forEach(r => {
-      r.addEventListener('change', e => App.ui.setScanlines(e.target.value === 'on'));
-    });
-
     const fs = $('#s-fs');
     const fsv = $('#s-fs-val');
     const savedFs = localStorage.getItem('crypt.fontsize') || '100';

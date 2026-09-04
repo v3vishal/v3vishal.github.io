@@ -200,14 +200,24 @@ kbd {
 body[data-track-active="ai"] .mark__sec { stroke: var(--ai); }
 body[data-track-active="ai"] .mark__ai  { stroke: var(--security); }
 
-/* …and it sways, once in a while, like it noticed you. */
+/* …and it sways when you greet it.
+   This used to run `mark-sway 9s infinite` on page load. The keyframes are
+   flat for 90% of that cycle, so the motion was invisible almost all the
+   time — but the animation still ticked on the main thread every single
+   frame, forever. Measured: this animation plus the ambient drift below
+   accounted for ~200 style recalculations per second on an idle, untouched
+   page (402 per 2s, falling to ~1 with both gated). will-change/compositor
+   promotion was tried first and did not help — the browser refuses to
+   promote these, so the only real fix is not to run them at rest.
+   Hover/focus keeps the whole visible effect at zero idle cost. */
 @keyframes mark-sway {
-    0%, 90%, 100% { transform: rotate(0deg); }
-    93%           { transform: rotate(-7deg); }
-    96%           { transform: rotate(4deg); }
+    0%, 100% { transform: rotate(0deg); }
+    30%      { transform: rotate(-7deg); }
+    65%      { transform: rotate(4deg); }
 }
-.wordmark .mark { animation: mark-sway 9s ease-in-out infinite; transform-origin: center; }
-.wordmark:hover .mark { animation: mark-sway 0.9s ease-in-out; }
+.wordmark .mark { transform-origin: center; }
+.wordmark:hover .mark,
+.wordmark:focus-visible .mark { animation: mark-sway 0.9s ease-in-out; }
 
 .thread { display: inline-block; overflow: visible; flex-shrink: 0; }
 .thread path {
@@ -245,13 +255,12 @@ body[data-track-active="ai"] .mark__ai  { stroke: var(--security); }
 .ambient::before {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 128'%3E%3Cpath d='M16 24 C72 24,80 104,176 104' stroke='%232b49c8' stroke-width='10' fill='none' stroke-linecap='round'/%3E%3Cpath d='M16 104 C72 104,80 24,176 24' stroke='%230f6b53' stroke-width='10' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
     top: -11vmax; right: -15vmax;
-    animation: drift-a 46s ease-in-out infinite alternate;
+    transform: translate(-4.5vmax, 3.5vmax) scale(1.06);
 }
 .ambient::after {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 128'%3E%3Cpath d='M16 24 C72 24,80 104,176 104' stroke='%232b49c8' stroke-width='10' fill='none' stroke-linecap='round'/%3E%3Cpath d='M16 104 C72 104,80 24,176 24' stroke='%230f6b53' stroke-width='10' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
     bottom: -13vmax; left: -16vmax;
-    transform: rotate(180deg);
-    animation: drift-b 56s ease-in-out infinite alternate;
+    transform: rotate(180deg) translate(4vmax, -3vmax) scale(1.04);
 }
 :root[data-theme="dark"] .ambient::before,
 :root[data-theme="dark"] .ambient::after {
@@ -263,14 +272,13 @@ body[data-track-active="ai"] .mark__ai  { stroke: var(--security); }
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 128'%3E%3Cpath d='M16 24 C72 24,80 104,176 104' stroke='%2397abff' stroke-width='10' fill='none' stroke-linecap='round'/%3E%3Cpath d='M16 104 C72 104,80 24,176 24' stroke='%2356c3a2' stroke-width='10' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
     }
 }
-@keyframes drift-a {
-    from { transform: translate(0, 0) scale(1); }
-    to   { transform: translate(-9vmax, 7vmax) scale(1.12); }
-}
-@keyframes drift-b {
-    from { transform: rotate(180deg) translate(0, 0) scale(1.08); }
-    to   { transform: rotate(180deg) translate(8vmax, -6vmax) scale(1); }
-}
+/* The two marks above used to drift on 46s/56s infinite alternate loops.
+   Both are behind a 30px blur at low opacity and moved ~9vmax over 46
+   seconds — motion nobody could actually perceive — while keeping the main
+   thread doing style recalculation every frame for the entire life of the
+   page. The transforms are now baked in at roughly the old animations'
+   midpoint, so the composition is unchanged and the page is genuinely idle
+   when nothing is happening. Keyframes deleted rather than left unused. */
 
 /* ---------- skip link ---------- */
 .skip-link {
@@ -671,11 +679,21 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
     font-size: 0.75rem;
     color: var(--ink-muted);
 }
+/* min-height, not padding: these sit in a flex row whose vertical rhythm is
+   set by .contact__row, so padding would push the rows apart. Measured at
+   23px tall before this, a hair under the 24px WCAG 2.2 target minimum —
+   close enough to look fine and still be a nuisance to tap on a phone. */
 .contact__value {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
     font-family: var(--f-mono);
     font-size: 0.875rem;
     font-weight: 400;
     letter-spacing: 0.02em;
+}
+@media (hover: none) and (pointer: coarse) {
+    .contact__value { min-height: 44px; }
 }
 
 /* departures-board dressing */
@@ -1242,11 +1260,19 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
     .sitemap__station[data-station="contact"] .sitemap__label { text-anchor: end; }
 }
 
-/* ---------- terminal (glass panel) ---------- */
+/* ---------- terminal (glass panel) ----------
+   `bottom` is driven by --kb-inset, not pinned to 0. Opening the on-screen
+   keyboard on a phone shrinks the VISUAL viewport but leaves the LAYOUT
+   viewport alone, and position:fixed resolves against the layout viewport —
+   so a terminal pinned to bottom:0 renders underneath the keyboard, which is
+   exactly the surface you need while typing into it. script.js measures the
+   gap with visualViewport and publishes it here while the panel is open.
+   Android Chrome is additionally handled declaratively by
+   `interactive-widget=resizes-content` in each page's viewport meta. */
 .terminal {
     position: fixed;
     inset-inline: 0;
-    bottom: 0;
+    bottom: var(--kb-inset, 0px);
     z-index: 10;
     display: flex;
     justify-content: center;
@@ -1263,6 +1289,10 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
     flex-direction: column;
     height: min(24rem, 65vh);
     height: min(24rem, 65dvh);
+    /* dvh does not shrink for the keyboard either, so the height above can
+       still exceed what is actually on screen. --kb-vh carries the real
+       visible height when a keyboard is up; without it this is inert. */
+    max-height: var(--kb-vh, 100dvh);
     background: var(--glass-strong);
     -webkit-backdrop-filter: blur(18px);
     backdrop-filter: blur(18px);
@@ -1377,7 +1407,13 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
     pointer-events: none;
 }
 
-/* the packet that rides behind the cursor */
+/* The packet that rides behind the cursor. Positioned with `translate` —
+   NOT left/top — because left/top are layout properties: writing them every
+   animation frame forced a full document layout per frame (measured: 1.0
+   forced layout per pointer move, dropping to 0.00 with this change), which
+   is what made the site feel pinned to ~60fps on high-refresh displays.
+   `translate` and `transform` are separate properties, so JS can write the
+   position without clobbering the -50% centering. */
 .cursor-packet {
     position: fixed;
     left: 0; top: 0;
@@ -1387,7 +1423,9 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
     background: var(--ink);
     opacity: 0.5;
     pointer-events: none;
+    translate: -100px -100px;
     transform: translate(-50%, -50%);
+    will-change: translate;
     transition: width 0.22s ease, height 0.22s ease, background 0.22s ease,
                 border-color 0.22s ease, opacity 0.3s ease;
 }
@@ -1461,8 +1499,12 @@ html.pointer-fx .skills__group {
 html.pointer-fx .magnetic { transition: transform 0.22s ease; }
 html.pointer-fx .project {
     transition: background 0.25s ease, transform 0.25s ease;
-    will-change: transform;
 }
+/* Scoped to :hover rather than declared outright — as an unconditional rule
+   this handed every project card its own compositor layer for the whole
+   session, to pay for a tilt that only exists while the pointer is inside
+   one card at a time. */
+html.pointer-fx .project:hover { will-change: transform; }
 
 /* ---------- cross-document page transitions ----------
    View Transitions API, aviation edition: the departing page takes

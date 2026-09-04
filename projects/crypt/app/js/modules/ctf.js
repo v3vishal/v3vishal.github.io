@@ -83,7 +83,7 @@ App.ctf = (() => {
             <div class="field" style="margin-top:10px">
               <div class="input-row">
                 <input class="input" type="text" id="ctf-input-${c.id}" placeholder="enter flag / answer (e.g. FLAG{...})">
-                <button class="brkbtn primary" id="ctf-submit-${c.id}">[ submit ]</button>
+                <button class="brkbtn primary" id="ctf-submit-${c.id}">submit</button>
               </div>
             </div>
             

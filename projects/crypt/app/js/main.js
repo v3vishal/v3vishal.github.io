@@ -2,7 +2,6 @@
 (() => {
   const TOOLS = ['dashboard','encryption','password','hash','threat','steganography','network','reports','settings','jwt','ctf'];
   let currentTool = null;
-  const startTime = Date.now();
 
   const switchTool = (name) => {
     if (!TOOLS.includes(name)) name = 'dashboard';
@@ -28,18 +27,10 @@
     switchTool(hash);
   };
 
-  const startUptime = () => {
-    const clock = document.getElementById('uptime-clock');
-    if (!clock) return;
-    setInterval(() => {
-      const t = Math.floor((Date.now() - startTime) / 1000);
-      const h = Math.floor(t / 3600);
-      const m = Math.floor((t % 3600) / 60);
-      const s = t % 60;
-      const pad = (n) => String(n).padStart(2, '0');
-      clock.textContent = `${pad(h)}:${pad(m)}:${pad(s)}`;
-    }, 1000);
-  };
+  /* startUptime() lived here: a 1s setInterval driving an "UPTIME" clock in
+     the top bar that reported how long the tab had been open, dressed up as
+     though it were a server's uptime. Removed with the markup — and with it,
+     a timer that woke the page every second for the entire session. */
 
   const dashboardBindings = () => {
     document.getElementById('dashboard-refresh')?.addEventListener('click', () => {
@@ -80,8 +71,6 @@
     for (const t of TOOLS) {
       if (App[t] && typeof App[t].init === 'function') App[t].init();
     }
-
-    startUptime();
     dashboardBindings();
     keyBindings();
     window.addEventListener('hashchange', router);

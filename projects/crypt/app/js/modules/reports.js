@@ -20,9 +20,9 @@ App.reports = (() => {
         <h1 class="view-title">// reports</h1>
         <div class="view-meta">session activity log · exportable</div>
         <div class="view-actions">
-          <button class="brkbtn" id="rep-export-md">[ export .md ]</button>
-          <button class="brkbtn" id="rep-export-json">[ export .json ]</button>
-          <button class="brkbtn danger" id="rep-clear">[ wipe log ]</button>
+          <button class="brkbtn" id="rep-export-md">export .md</button>
+          <button class="brkbtn" id="rep-export-json">export .json</button>
+          <button class="brkbtn danger" id="rep-clear">wipe log</button>
         </div>
       </div>
 
@@ -34,7 +34,7 @@ App.reports = (() => {
         </header>
         <div class="flex gap" id="rep-filters">
           ${['all','encrypt','pwd','hash','threat','steg','net'].map(k =>
-            `<button class="brkbtn ${k==='all'?'primary':''}" data-filter="${k}">[ ${k} ]</button>`
+            `<button class="brkbtn ${k==='all'?'primary':''}" data-filter="${k}">${k}</button>`
           ).join('')}
         </div>
       </div>

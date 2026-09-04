@@ -1,9 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Every indexable page, with an honest <lastmod> taken from each file's
+    last content commit.
+
+    No <changefreq> or <priority>: Google has said outright that it ignores
+    both. Inventing values for them would only make <lastmod> less credible
+    by association — and lastmod is only used at all while it stays accurate,
+    so it is worth keeping clean. Update it when the page's content changes,
+    not when the stylesheet hash does.
+
+    Not listed, deliberately: /404.html, which is served with a 404 status.
+-->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <url><loc>https://v3x.is-a.dev/</loc></url>
-    <url><loc>https://v3x.is-a.dev/blog/</loc></url>
-    <url><loc>https://v3x.is-a.dev/blog/hello-writeups/</loc></url>
-    <url><loc>https://v3x.is-a.dev/projects/agri-fincaster/</loc></url>
-    <url><loc>https://v3x.is-a.dev/projects/crypt/</loc></url>
-    <url><loc>https://v3x.is-a.dev/projects/monie/</loc></url>
+
+    <url>
+        <loc>https://v3x.is-a.dev/</loc>
+        <lastmod>2026-07-29</lastmod>
+    </url>
+
+    <url>
+        <loc>https://v3x.is-a.dev/blog/</loc>
+        <lastmod>2026-08-25</lastmod>
+    </url>
+    <url>
+        <loc>https://v3x.is-a.dev/blog/sec0/</loc>
+        <lastmod>2026-08-25</lastmod>
+    </url>
+    <url>
+        <loc>https://v3x.is-a.dev/blog/hello-writeups/</loc>
+        <lastmod>2026-07-22</lastmod>
+    </url>
+
+    <url>
+        <loc>https://v3x.is-a.dev/projects/agri-fincaster/</loc>
+        <lastmod>2026-07-22</lastmod>
+    </url>
+    <url>
+        <loc>https://v3x.is-a.dev/projects/monie/</loc>
+        <lastmod>2026-07-22</lastmod>
+    </url>
+    <url>
+        <loc>https://v3x.is-a.dev/projects/crypt/</loc>
+        <lastmod>2026-07-23</lastmod>
+    </url>
+    <url>
+        <loc>https://v3x.is-a.dev/projects/crypt/app/</loc>
+        <lastmod>2026-07-23</lastmod>
+    </url>
+
 </urlset>
