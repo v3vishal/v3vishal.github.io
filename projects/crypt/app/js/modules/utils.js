@@ -65,20 +65,82 @@ App.utils = (() => {
       ? new TextEncoder().encode(text)
       : text;
     const algos = { md5: null, sha1: 'SHA-1', sha256: 'SHA-256', sha512: 'SHA-512' };
-    if (algo === 'md5') return cryptoJsMd5(typeof text === 'string' ? text : bytesToBin(text));
+    // SubtleCrypto deliberately does not implement MD5 (it is broken, which
+    // is exactly why this toolkit demonstrates it), so it is done by hand
+    // below. Note this now hashes `buf` — the real bytes — in every branch.
+    if (algo === 'md5') return md5Hex(buf);
     const digest = await crypto.subtle.digest(algos[algo], buf);
     return toHex(new Uint8Array(digest));
   };
 
-  const cryptoJsMd5 = (text) => {
-    // CryptoJS is already loaded as a CDN dep.
-    return CryptoJS.MD5(text).toString(CryptoJS.enc.Hex);
-  };
+  /* MD5 (RFC 1321), ~40 lines, operating directly on bytes.
+     This replaces a 48KB crypto-js bundle pulled from a public CDN on every
+     page load — with no Subresource Integrity attribute, so anyone able to
+     tamper with that response could run arbitrary script inside a page whose
+     entire premise is security tooling. It was loaded solely for this one
+     function; everything else here already uses SubtleCrypto. Removing it
+     also drops the app's last third-party request, which is what the rest of
+     the site already promises (see tools/verify-nav.js).
 
-  const bytesToBin = (bytes) => {
-    let s = '';
-    for (const b of bytes) s += String.fromCharCode(b);
-    return s;
+     The previous version routed byte input through String.fromCharCode and
+     let crypto-js UTF-8-encode it, which silently corrupted any byte above
+     0x7F — hashing bytes directly fixes that too. Verified against the
+     RFC 1321 test-suite vectors. */
+  const MD5_S = [
+    7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
+    5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
+    4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
+    6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21,
+  ];
+  const MD5_K = (() => {
+    const k = new Uint32Array(64);
+    for (let i = 0; i < 64; i++) k[i] = Math.floor(Math.abs(Math.sin(i + 1)) * 4294967296);
+    return k;
+  })();
+
+  const md5Hex = (bytes) => {
+    const len = bytes.length;
+    const withOne = len + 1;
+    const total = withOne + ((56 - (withOne % 64)) + 64) % 64 + 8;
+    const m = new Uint8Array(total);
+    m.set(bytes);
+    m[len] = 0x80;
+    const bitLen = len * 8;
+    const lo = bitLen >>> 0;
+    const hi = Math.floor(bitLen / 4294967296) >>> 0;
+    for (let i = 0; i < 4; i++) {
+      m[total - 8 + i] = (lo >>> (i * 8)) & 0xff;
+      m[total - 4 + i] = (hi >>> (i * 8)) & 0xff;
+    }
+
+    let a0 = 0x67452301, b0 = 0xefcdab89, c0 = 0x98badcfe, d0 = 0x10325476;
+    const M = new Uint32Array(16);
+    for (let off = 0; off < total; off += 64) {
+      for (let i = 0; i < 16; i++) {
+        const j = off + i * 4;
+        M[i] = (m[j] | (m[j + 1] << 8) | (m[j + 2] << 16) | (m[j + 3] << 24)) >>> 0;
+      }
+      let A = a0, B = b0, C = c0, D = d0;
+      for (let i = 0; i < 64; i++) {
+        let F, g;
+        if (i < 16)      { F = (B & C) | (~B & D);  g = i; }
+        else if (i < 32) { F = (D & B) | (~D & C);  g = (5 * i + 1) % 16; }
+        else if (i < 48) { F = B ^ C ^ D;           g = (3 * i + 5) % 16; }
+        else             { F = C ^ (B | ~D);        g = (7 * i) % 16; }
+        F = (F + A + MD5_K[i] + M[g]) >>> 0;
+        A = D; D = C; C = B;
+        const s = MD5_S[i];
+        B = (B + (((F << s) | (F >>> (32 - s))) >>> 0)) >>> 0;
+      }
+      a0 = (a0 + A) >>> 0; b0 = (b0 + B) >>> 0;
+      c0 = (c0 + C) >>> 0; d0 = (d0 + D) >>> 0;
+    }
+
+    let hex = '';
+    for (const v of [a0, b0, c0, d0]) {
+      for (let i = 0; i < 4; i++) hex += ((v >>> (i * 8)) & 0xff).toString(16).padStart(2, '0');
+    }
+    return hex;
   };
 
   // ----- Format -----
@@ -145,6 +207,6 @@ App.utils = (() => {
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
   return { $, $$, el, randBytes, randInt, pickRandom, toHex, fromHex, toB64, fromB64,
-           sha, cryptoJsMd5, bytesToBin, fmtTime, fmtAgo, pad, fmtCrackTime,
+           sha, md5Hex, fmtTime, fmtAgo, pad, fmtCrackTime,
            asciiBar, copy, copyByEl, esc };
 })();

@@ -2,7 +2,7 @@
 window.App = window.App || {};
 
 App.hash = (() => {
-  const { $, esc, copy, sha, cryptoJsMd5 } = App.utils;
+  const { $, esc, copy, sha } = App.utils;
   let isLoaded = false;
 
   // ----- Detection -----
@@ -32,7 +32,7 @@ App.hash = (() => {
 
   // ----- Generation -----
   const generateAll = async (text) => ({
-    md5:    cryptoJsMd5(text),
+    md5:    await sha('md5', text),
     sha1:   await sha('sha1', text),
     sha256: await sha('sha256', text),
     sha512: await sha('sha512', text)
@@ -47,9 +47,9 @@ App.hash = (() => {
     while (scanned < list.length) {
       for (let i = scanned; i < Math.min(scanned + stride, list.length); i++) {
         const candidate = list[i];
-        let h;
-        if (algo === 'md5') h = cryptoJsMd5(candidate);
-        else h = await sha(algo, candidate);
+        /* sha() now covers md5 too, so the algorithm no longer needs a
+           special case here. */
+        const h = await sha(algo, candidate);
         if (h.toLowerCase() === target) return { found: true, plaintext: candidate, scanned: i + 1 };
       }
       scanned += stride;
@@ -67,7 +67,7 @@ App.hash = (() => {
     view.innerHTML = `
       <div class="view-headerline">
         <h1 class="view-title">// hash inspector</h1>
-        <div class="view-meta">subtle-crypto / cryptojs · dictionary crack via rockyou-top10k</div>
+        <div class="view-meta">WebCrypto + in-page MD5 · dictionary crack against rockyou-top10k</div>
       </div>
 
       <div class="tabs">
@@ -87,7 +87,7 @@ App.hash = (() => {
               <label class="field-label">hash to fingerprint</label>
               <textarea class="textarea code" id="h-input" placeholder="paste hash (md5, sha-*, bcrypt, argon2…)" spellcheck="false"></textarea>
             </div>
-            <button class="brkbtn primary block" id="h-go">[ identify ]</button>
+            <button class="brkbtn primary block" id="h-go">identify</button>
             <div style="height:10px"></div>
             <div class="muted" style="font-size:11px">
               quick samples:
@@ -113,7 +113,7 @@ App.hash = (() => {
               <div class="kv"><span class="kv-k">note</span><span class="kv-v mute" id="hk-note">—</span></div>
             </div>
             <div style="height:14px"></div>
-            <button class="brkbtn warn block" id="h-crack" disabled>[ dictionary attack ]</button>
+            <button class="brkbtn warn block" id="h-crack" disabled>dictionary attack</button>
             <div id="h-crack-result"></div>
           </div>
         </div>
@@ -131,7 +131,7 @@ App.hash = (() => {
               <label class="field-label">input text</label>
               <textarea class="textarea" id="hg-input" placeholder="text to hash" spellcheck="false"></textarea>
             </div>
-            <button class="brkbtn primary block" id="hg-go">[ compute all ]</button>
+            <button class="brkbtn primary block" id="hg-go">compute all</button>
           </div>
 
           <div class="panel">
@@ -147,7 +147,7 @@ App.hash = (() => {
               <div class="kv"><span class="kv-k">sha-512</span><span class="kv-v code" id="hg-sha512">—</span></div>
             </div>
             <div style="height:10px"></div>
-            <button class="brkbtn block" id="hg-copy">[ copy all (json) ]</button>
+            <button class="brkbtn block" id="hg-copy">copy all (json)</button>
           </div>
         </div>
       </div>

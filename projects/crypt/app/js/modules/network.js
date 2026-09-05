@@ -104,8 +104,8 @@ App.network = (() => {
               <textarea class="textarea code" id="nh-input" style="min-height:240px" placeholder="HTTP/1.1 200 OK&#10;Server: nginx&#10;Strict-Transport-Security: max-age=31536000; includeSubDomains&#10;..."></textarea>
             </div>
             <div class="flex gap">
-              <button class="brkbtn primary" id="nh-go">[ audit ]</button>
-              <button class="brkbtn" id="nh-sample">[ load sample ]</button>
+              <button class="brkbtn primary" id="nh-go">audit</button>
+              <button class="brkbtn" id="nh-sample">load sample</button>
             </div>
           </div>
 
@@ -134,7 +134,7 @@ App.network = (() => {
               <label class="field-label">paste JWT</label>
               <textarea class="textarea code" id="nj-input" placeholder="eyJhbGciOi..."></textarea>
             </div>
-            <button class="brkbtn primary block" id="nj-go">[ decode ]</button>
+            <button class="brkbtn primary block" id="nj-go">decode</button>
           </div>
           <div class="panel">
             <header class="panel-head">

@@ -97,20 +97,11 @@ App.dashboard = (() => {
           ).join('');
     }
 
-    // Top-bar integrity
-    $('#integrity-value').textContent = String(score).padStart(2, '0');
-    const bar = $('#integrity-bar');
-    if (bar) {
-      const on = Math.round((score / 100) * 10);
-      bar.textContent = '▓'.repeat(on) + '░'.repeat(10 - on);
-    }
-    const tDot = $('#threat-dot');
-    const tLabel = $('#threat-label');
-    if (tDot && tLabel) {
-      const level = score >= 75 ? 'low' : score >= 45 ? 'med' : 'high';
-      tDot.className = 'threat-dot threat-' + level;
-      tLabel.textContent = level.toUpperCase();
-    }
+    /* The top-bar INTEGRITY meter and THREAT level readout were fed from
+       here. Both were functions of how many times you had used the tools —
+       not of anything being measured — so they have been removed along with
+       the markup. (This block also dereferenced #integrity-value with no null
+       check, so it would have thrown the moment the element went away.) */
 
     // Threat ledger
     $('#th-crit').textContent = String(sev.crit).padStart(3, '0');
@@ -128,11 +119,8 @@ App.dashboard = (() => {
     if (ctrPhish) ctrPhish.textContent = String(counts.phish || 0).padStart(4, '0');
     $('#ctr-last').textContent    = last ? fmtAgo(last.ts) : '—';
 
-    // Sidebar telemetry
-    const totalOps = Object.values(counts).reduce((a, b) => a + b, 0);
-    $('#tele-ops').textContent = String(totalOps).padStart(3, '0');
-    $('#tele-threats').textContent = String(sev.crit + sev.high).padStart(3, '0');
-    $('#tele-session').textContent = totalOps ? 'active' : 'cold';
+    /* Sidebar "TELEMETRY" (ops_run / threats / session) removed with its
+       markup — same reason as the integrity meter above. */
 
     // Spark
     const buckets = App.log.bucketize(24, 32);

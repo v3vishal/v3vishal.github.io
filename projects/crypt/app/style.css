@@ -17,24 +17,34 @@
   src: url('fonts/fragment-mono-latin.woff2') format('woff2');
 }
 
+/* ------------------------------------------------------------
+   Tokens.
+
+   These are the portfolio's tokens, not a second palette invented
+   for this app. The app previously ran its own "terminal brutalist"
+   world — phosphor #d8ff5b on #050505, amber, crimson — which had
+   nothing to do with the site that links to it, and keyed its theme
+   off `data-color-scheme` + localStorage `crypt.theme` while the site
+   uses `data-theme` + `theme`. Switching to dark on the portfolio and
+   then opening the app therefore threw you back to whatever the app
+   had stored separately.
+
+   Same variable NAMES are kept (--bg, --fg, --rule, --phosphor …) so
+   the ~1000 lines of component CSS below keep working untouched; only
+   what they resolve to has changed. --phosphor is now the security
+   pine, so every accent that used to be neon reads as the brand's
+   security thread instead.
+   ------------------------------------------------------------ */
 :root {
-  --security:        #0f6b53;
-  --ai:              #2b49c8;
-  --phosphor:        #d8ff5b;
-  --phosphor-dim:    #8da735;
-  --phosphor-bright: #f4ffb0;
-  --amber:           #ffb000;
-  --crimson:         #ff3838;
-  --cobalt:          #5dc1ff;
+  color-scheme: light;
+
+  --security:        #0f6b53;   /* pine   — the security thread */
+  --ai:              #2b49c8;   /* cobalt — the AI thread       */
   --paper:           #f7f8f7;
   --ink:             #191c1b;
 
-  --f-text:          'Schibsted Grotesk', system-ui, sans-serif;
-  --f-mono:          'Fragment Mono', ui-monospace, monospace;
-
-  --rule:    rgba(15, 107, 83, 0.22);
-  --rule-2:  rgba(15, 107, 83, 0.45);
-  --rule-3:  rgba(15, 107, 83, 0.08);
+  --f-text:          'Schibsted Grotesk', system-ui, -apple-system, sans-serif;
+  --f-mono:          'Fragment Mono', ui-monospace, 'SF Mono', Consolas, monospace;
 
   --t-fast:   80ms ease;
   --t-step:   120ms ease;
@@ -47,46 +57,79 @@
   --gutter: 16px;
   --char:   8px;
   --row:    20px;
+
+  /* light is the default, matching the site */
+  --bg:        #f7f8f7;
+  --bg-1:      #eef0ee;
+  --bg-2:      #e7eae8;
+  --bg-3:      #dde1de;
+  --bg-deep:   #ffffff;
+  --fg:        #191c1b;
+  --fg-dim:    #4c534f;
+  --fg-bright: #000000;
+  --fg-mute:   #7b837f;
+  --rule:      #d9dcd9;
+  --rule-2:    #b9beba;
+  --rule-3:    #e8eae8;
+  --pop-bg:    #191c1b;
+  --pop-fg:    #f7f8f7;
+
+  --phosphor:        var(--security);
+  --phosphor-dim:    #4c534f;
+  --phosphor-bright: #0b4f3d;
+  --amber:           #a8451f;
+  --crimson:         #b3261e;
+  --cobalt:          var(--ai);
+
+  /* the CRT overlays are gone — these stay defined at 0 so any stray
+     reference resolves to "off" rather than to an invalid value */
+  --noise-opacity: 0;
+  --scan-opacity:  0;
 }
 
-[data-color-scheme="dark"] {
-  --bg:        #050505;
-  --bg-1:      #0a0a0a;
-  --bg-2:      #111110;
-  --bg-3:      #181816;
-  --bg-deep:   #000000;
-  --fg:        var(--phosphor);
-  --fg-dim:    var(--phosphor-dim);
-  --fg-bright: var(--phosphor-bright);
-  --fg-mute:   #5e6342;
-  --rule:      rgba(216, 255, 91, 0.22);
-  --rule-2:    rgba(216, 255, 91, 0.45);
-  --rule-3:    rgba(216, 255, 91, 0.08);
-  --pop-bg:    var(--phosphor);
-  --pop-fg:    #050505;
-  --noise-opacity: .055;
-  --scan-opacity: .07;
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --paper:     #141716;
+  --ink:       #e6eae7;
+  --security:  #56c3a2;
+  --ai:        #97abff;
+
+  --bg:        #141716;
+  --bg-1:      #1c201e;
+  --bg-2:      #212623;
+  --bg-3:      #272d2a;
+  --bg-deep:   #0e100f;
+  --fg:        #e6eae7;
+  --fg-dim:    #a2aaa6;
+  --fg-bright: #ffffff;
+  --fg-mute:   #79827e;
+  --rule:      #2c322f;
+  --rule-2:    #3d453f;
+  --rule-3:    #232825;
+  --pop-bg:    #e6eae7;
+  --pop-fg:    #141716;
+
+  --phosphor:        var(--security);
+  --phosphor-dim:    #a2aaa6;
+  --phosphor-bright: #7fdcbd;
+  --amber:           #ff9a76;
+  --crimson:         #ff8a80;
+  --cobalt:          var(--ai);
 }
 
-[data-color-scheme="light"] {
-  --bg:        #f1ede0;
-  --bg-1:      #e8e2d0;
-  --bg-2:      #dcd5be;
-  --bg-3:      #c7bea2;
-  --bg-deep:   #f6f1e3;
-  --fg:        #0a0a0a;
-  --fg-dim:    #4a4a44;
-  --fg-bright: #000;
-  --fg-mute:   #8a8678;
-  --rule:      rgba(10, 10, 10, 0.32);
-  --rule-2:    rgba(10, 10, 10, 0.6);
-  --rule-3:    rgba(10, 10, 10, 0.1);
-  --pop-bg:    #0a0a0a;
-  --pop-fg:    #f1ede0;
-  --phosphor:  #2a6b00;
-  --phosphor-bright: #1a4500;
-  --noise-opacity: .035;
-  --scan-opacity: 0;
+/* JS-off / pre-hydration fallback, same pattern as the main site. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --paper: #141716; --ink: #e6eae7; --security: #56c3a2; --ai: #97abff;
+    --bg: #141716; --bg-1: #1c201e; --bg-2: #212623; --bg-3: #272d2a; --bg-deep: #0e100f;
+    --fg: #e6eae7; --fg-dim: #a2aaa6; --fg-bright: #ffffff; --fg-mute: #79827e;
+    --rule: #2c322f; --rule-2: #3d453f; --rule-3: #232825;
+    --pop-bg: #e6eae7; --pop-fg: #141716;
+    --phosphor: var(--security); --phosphor-dim: #a2aaa6; --phosphor-bright: #7fdcbd;
+    --amber: #ff9a76; --crimson: #ff8a80; --cobalt: var(--ai);
+  }
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -107,30 +150,18 @@ body {
   caret-color: var(--phosphor-bright);
 }
 
-/* ---- Atmosphere: scanlines + noise ---------------------------------- */
-.scanlines {
-  position: fixed; inset: 0; pointer-events: none; z-index: 9000;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0,
-    transparent 2px,
-    rgba(0,0,0,0.18) 2px,
-    rgba(0,0,0,0.18) 3px
-  );
-  opacity: var(--scan-opacity);
-  mix-blend-mode: multiply;
-}
-.noise {
-  position: fixed; inset: 0; pointer-events: none; z-index: 9001;
-  opacity: var(--noise-opacity);
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-}
+/* The .scanlines and .noise layers lived here: two fixed, full-viewport
+   overlays, one of them a mix-blend-mode gradient and the other an SVG
+   turbulence filter stretched across the whole screen. They were pure CRT
+   costume, they sat above every interactive element, and the filtered one
+   is genuinely expensive to composite. Both are gone. */
 
 /* ---- Selection + focus ---------------------------------------------- */
-::selection { background: var(--phosphor); color: var(--ink); }
+::selection { background: var(--ink); color: var(--paper); }
 :focus-visible {
-  outline: 1px dashed var(--phosphor);
-  outline-offset: 2px;
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
 /* ---- Scrollbars ------------------------------------------------------ */
@@ -151,15 +182,18 @@ body {
   grid-template-rows: auto 1fr auto;
 }
 
-/* ---- Topbar ---------------------------------------------------------- */
+/* ---- Topbar ----------------------------------------------------------
+   Reads as the site's header rather than a rack-mount status panel: the
+   Interchange mark, the name, where you are, and the two controls that
+   actually do something. The INTEGRITY / UPTIME / THREAT cells are gone. */
 .topbar {
-  display: grid;
-  grid-template-columns: minmax(220px, auto) 1fr auto auto auto;
-  gap: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
   border-bottom: 1px solid var(--rule);
-  background: var(--bg-deep);
-  height: 44px;
-  align-items: stretch;
+  background: var(--bg);
+  min-height: 56px;
+  padding: 0 clamp(0.9rem, 3vw, 1.5rem);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -168,78 +202,58 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 0 16px;
-  border-right: 1px solid var(--rule);
-  font-size: 12px;
-  letter-spacing: 0.05em;
   white-space: nowrap;
 }
-.topbar-cell:last-child { border-right: 0; }
 
 .brand {
-  font-family: var(--stencil);
-  font-size: 14px;
-  letter-spacing: 0.18em;
-}
-.brand-mark {
-  color: var(--phosphor-bright);
-  text-shadow: 0 0 6px rgba(216, 255, 91, .35);
-}
-.brand-name { color: var(--phosphor-bright); }
-.brand-sep { color: var(--fg-mute); margin: 0 4px; }
-.brand-sub { color: var(--phosphor); }
-
-.meter { font-size: 11px; }
-.meter-label { color: var(--fg-mute); }
-.meter-bar {
-  font-family: var(--mono);
-  color: var(--phosphor);
-  letter-spacing: 0;
-}
-.meter-value {
-  color: var(--phosphor-bright);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--f-text);
+  font-size: 1.0625rem;
   font-weight: 600;
-  min-width: 2ch;
-  text-align: right;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+  text-decoration: none;
 }
-
-.uptime .topbar-key { color: var(--fg-mute); }
-#uptime-clock { color: var(--phosphor); font-variant-numeric: tabular-nums; }
-
-.threat { gap: 8px; }
-.threat-dot {
-  width: 8px; height: 8px;
-  display: inline-block;
-  background: var(--phosphor);
-  box-shadow: 0 0 8px currentColor;
-  animation: blink-slow 2s steps(2, end) infinite;
+.brand .mark { overflow: visible; flex-shrink: 0; }
+.brand-name { color: var(--fg); }
+.brand-tag {
+  font-family: var(--f-mono);
+  font-size: 0.75rem;
+  color: var(--fg-mute);
+  border-left: 1px solid var(--rule);
+  padding-left: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.threat-low { color: var(--phosphor); background: var(--phosphor); }
-.threat-med { color: var(--amber); background: var(--amber); }
-.threat-high { color: var(--crimson); background: var(--crimson); }
-.threat-label { font-weight: 600; }
+@media (max-width: 640px) { .brand-tag { display: none; } }
 
-@keyframes blink-slow { 50% { opacity: .25; } }
-@keyframes blink-fast { 50% { opacity: 0; } }
-
-.actions { gap: 6px; padding-right: 12px; }
+.actions { gap: 0.25rem; margin-left: auto; }
 .iconbtn {
-  font-family: var(--mono);
-  font-size: 12px;
+  display: grid;
+  place-items: center;
+  width: 2.25rem; height: 2.25rem;
+  font-family: var(--f-text);
+  font-size: 1rem;
   background: transparent;
   color: var(--fg-dim);
   border: 0;
-  padding: 4px 8px;
+  border-radius: 50%;
+  text-decoration: none;
   cursor: pointer;
-  transition: color var(--t-fast);
+  transition: color var(--t-fast), background var(--t-fast);
 }
-.iconbtn:hover { color: var(--phosphor-bright); background: var(--bg-2); }
+.iconbtn:hover { color: var(--fg); background: var(--bg-1); }
+@media (hover: none) and (pointer: coarse) {
+  .iconbtn { width: 2.75rem; height: 2.75rem; }
+}
 
 /* ---- Layout grid ----------------------------------------------------- */
 .layout {
   display: grid;
   grid-template-columns: 240px 1fr;
-  min-height: calc(100vh - 44px - 28px);
+  min-height: calc(100vh - 56px - 28px);
 }
 
 /* ---- Sidebar --------------------------------------------------------- */
@@ -252,8 +266,8 @@ body {
   gap: 4px;
   font-size: 13px;
   position: sticky;
-  top: 44px;
-  height: calc(100vh - 44px - 28px);
+  top: 56px;
+  height: calc(100vh - 56px - 28px);
   overflow-y: auto;
 }
 
@@ -307,17 +321,17 @@ body {
 
 .sidebar-footer {
   margin-top: auto;
-  padding: 12px;
+  padding: 14px 12px;
   border-top: 1px solid var(--rule);
 }
-.tele-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  color: var(--fg-dim);
-  padding: 2px 0;
+/* Replaces the fabricated ops_run / threats / session counters with the one
+   thing in that corner actually worth telling someone. */
+.sidebar-note {
+  font-family: var(--f-text);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--fg-mute);
 }
-.tele-row :last-child { color: var(--phosphor); font-variant-numeric: tabular-nums; }
 
 .caret-line {
   margin-top: 12px;
@@ -325,11 +339,10 @@ body {
   font-size: 12px;
   letter-spacing: 0.04em;
 }
-.caret {
-  display: inline-block;
-  color: var(--phosphor-bright);
-  animation: blink-fast .9s steps(2, end) infinite;
-}
+/* .caret (a blinking block cursor in the sidebar footer) removed along with
+   the TELEMETRY block it decorated — it was a third always-on infinite
+   animation, the same class of permanent main-thread cost that was just
+   taken out of the main site. */
 
 /* ---- Main content area --------------------------------------------- */
 .content {
@@ -565,7 +578,7 @@ body {
 }
 .feed li {
   display: grid;
-  grid-template-columns: 56px 70px 1fr;
+  grid-template-columns: 44px 70px 1fr;
   gap: 8px;
   padding: 4px 0;
   border-bottom: 1px dotted var(--rule-3);
@@ -964,12 +977,11 @@ body {
 }
 .overlay-text {
   margin-top: 12px;
-  font-family: var(--display);
-  font-size: 24px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--phosphor-bright);
-  animation: blink-fast 1.2s steps(2, end) infinite;
+  font-family: var(--f-text);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--fg);
 }
 
 .toaster {
@@ -1053,7 +1065,7 @@ body {
   .layout { grid-template-columns: 1fr; }
   .sidebar {
     position: fixed;
-    left: 0; top: 44px;
+    left: 0; top: 56px;
     bottom: 28px;
     width: 240px;
     transform: translateX(-100%);

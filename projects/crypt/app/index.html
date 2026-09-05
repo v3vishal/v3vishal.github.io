@@ -1,48 +1,77 @@
 <!DOCTYPE html>
-<html lang="en" data-color-scheme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>crypt // sec-ops</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=VT323&family=Major+Mono+Display&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=f74471cc">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+    <title>crypt // sec-ops — interactive security toolkit</title>
+    <meta name="description" content="Crypt — a browser-based security toolkit: encryption and hashing, password-strength analysis, a JWT inspector, and a CTF lab. Runs entirely client-side; nothing you type leaves the page.">
+    <!-- The case study links here as ./app/, so declare that the canonical
+         form rather than letting app/ and app/index.html compete as two
+         URLs for one page. -->
+    <link rel="canonical" href="https://v3x.is-a.dev/projects/crypt/app/">
+
+    <!-- Identical to the rest of the site's favicon, so the app reads as the
+         same property in a tab strip rather than as a separate product. -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23f7f8f7'/%3E%3Cpath d='M7 21 C 14 21 15 11 25 11' stroke='%232b49c8' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3Cpath d='M7 11 C 14 11 15 21 25 21' stroke='%230f6b53' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+
+    <!-- Previously here: a Google Fonts stylesheet (plus two preconnects) for
+         JetBrains Mono, VT323 and Major Mono Display, and a 48KB crypto-js
+         bundle from cdnjs with no integrity attribute.
+
+         The fonts were dead weight — style.css maps --mono/--display/--stencil
+         onto the self-hosted Schibsted Grotesk and Fragment Mono faces in
+         ./fonts, and none of those three families is referenced anywhere in
+         the stylesheet. crypto-js was loaded for exactly one MD5 call, now
+         implemented in js/modules/utils.js. With both gone this page makes no
+         third-party requests at all, which is what the rest of the site
+         already guarantees. -->
+    <script>
+        // Same pre-paint theme resolution the rest of the site uses, reading
+        // the same `theme` key — without this the app paints light and then
+        // snaps to dark once ui.js runs.
+        (function () {
+            try {
+                var t = localStorage.getItem('theme');
+                if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                } else if (t === 'light') {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                }
+            } catch (e) { /* storage blocked — the media-query fallback in CSS applies */ }
+        })();
+    </script>
+
+    <link rel="stylesheet" href="style.css?v=91cf2ab3">
 </head>
 <body>
-    <div class="scanlines" aria-hidden="true"></div>
-    <div class="noise" aria-hidden="true"></div>
-
+    <!-- Removed here: .scanlines and .noise, two fixed full-viewport overlay
+         layers, plus a topbar carrying an INTEGRITY meter, an UPTIME clock and
+         a THREAT level readout. None of the three measured anything — the
+         meter and threat level were derived from how many times you had
+         clicked around, and the uptime clock was a setInterval counting how
+         long the tab had been open. On a page whose credibility rests on
+         being honest about security, invented telemetry is the one thing it
+         cannot afford. What is left is the real navigation. -->
     <div class="app">
 
         <header class="topbar">
-            <div class="topbar-cell brand">
-                <svg class="mark" viewBox="0 0 24 16" width="20" height="13" aria-hidden="true" style="margin-right:6px">
-                    <path class="mark__ai"  d="M2 3 C 9 3, 10 13, 22 13" stroke="var(--ai)" fill="none" stroke-width="2.4" stroke-linecap="round"/>
-                    <path class="mark__sec" d="M2 13 C 9 13, 10 3, 22 3" stroke="var(--security)" fill="none" stroke-width="2.4" stroke-linecap="round"/>
+            <a class="brand" href="/projects/crypt/">
+                <svg class="mark" viewBox="0 0 24 16" width="22" height="15" aria-hidden="true">
+                    <path d="M2 3 C 9 3, 10 13, 22 13" stroke="var(--ai)" fill="none" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M2 13 C 9 13, 10 3, 22 3" stroke="var(--paper)" fill="none" stroke-width="5.5" stroke-linecap="round"/>
+                    <path d="M2 13 C 9 13, 10 3, 22 3" stroke="var(--security)" fill="none" stroke-width="2.4" stroke-linecap="round"/>
                 </svg>
-                <span class="brand-name">CRYPT</span>
-                <span class="brand-sep">//</span>
-                <span class="brand-sub">SEC-OPS</span>
-            </div>
-            <div class="topbar-cell meter">
-                <span class="meter-label">INTEGRITY</span>
-                <span class="meter-bar" id="integrity-bar" data-value="0">▓▓▓▓▓▓▓▓░░</span>
-                <span class="meter-value" id="integrity-value">00</span>
-            </div>
-            <div class="topbar-cell uptime">
-                <span class="topbar-key">UPTIME</span>
-                <span id="uptime-clock">00:00:00</span>
-            </div>
-            <div class="topbar-cell threat">
-                <span class="threat-dot threat-low" id="threat-dot"></span>
-                <span class="threat-label" id="threat-label">LOW</span>
-            </div>
+                <span class="brand-name">Crypt</span>
+            </a>
+            <span class="brand-tag" id="view-breadcrumb">security toolkit</span>
+
             <div class="topbar-cell actions">
-                <a class="iconbtn" href="/" title="Back to Portfolio">[ ↩ ]</a>
-                <button class="iconbtn" id="theme-toggle" title="Toggle theme">[ ◐ ]</button>
-                <button class="iconbtn" id="mobile-nav-btn" title="Menu">[ ≡ ]</button>
+<!-- Was ../../index.html, which from /projects/crypt/app/
+                 resolves to /projects/index.html — a page that does not
+                 exist. Root-relative so it cannot stack again. -->
+                <a class="iconbtn" href="/" title="Back to the portfolio">↩</a>
+                <button class="iconbtn" id="theme-toggle" type="button" aria-label="Switch to dark theme">☾</button>
+                <button class="iconbtn" id="mobile-nav-btn" type="button" aria-label="Open menu" aria-expanded="false">≡</button>
             </div>
         </header>
 
@@ -110,11 +139,10 @@
                 </div>
 
                 <div class="sidebar-footer">
-                    <div class="sidebar-heading">└─ TELEMETRY ───────┘</div>
-                    <div class="tele-row"><span>ops_run</span><span id="tele-ops">000</span></div>
-                    <div class="tele-row"><span>threats</span><span id="tele-threats">000</span></div>
-                    <div class="tele-row"><span>session</span><span id="tele-session">cold</span></div>
-                    <div class="caret-line"><span class="caret">█</span> ready_</div>
+                    <p class="sidebar-note">
+                        Everything here runs in your browser. Nothing you type is
+                        uploaded, logged, or sent anywhere.
+                    </p>
                 </div>
             </aside>
 
@@ -125,8 +153,8 @@
                         <h1 class="view-title">// dashboard</h1>
                         <div class="view-meta" id="dashboard-meta">node: localhost · scope: all</div>
                         <div class="view-actions">
-                            <button class="brkbtn" id="dashboard-refresh">[ refresh ]</button>
-                            <button class="brkbtn" id="dashboard-clear">[ clear log ]</button>
+                            <button class="brkbtn" id="dashboard-refresh">refresh</button>
+                            <button class="brkbtn" id="dashboard-clear">clear log</button>
                         </div>
                     </div>
 

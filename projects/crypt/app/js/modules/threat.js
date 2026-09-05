@@ -63,8 +63,8 @@ App.threat = (() => {
             <textarea class="textarea code" id="th-payload" placeholder="paste a payload to evaluate" spellcheck="false"></textarea>
           </div>
           <div class="flex gap">
-            <button class="brkbtn" id="th-sample">[ load sample ]</button>
-            <button class="brkbtn primary" id="th-run">[ analyse ]</button>
+            <button class="brkbtn" id="th-sample">load sample</button>
+            <button class="brkbtn primary" id="th-run">analyse</button>
           </div>
         </div>
 

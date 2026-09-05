@@ -45,8 +45,8 @@ App.jwt = (() => {
             <textarea class="textarea code" id="jwt-input" placeholder="eyJhbGciOi..."></textarea>
           </div>
           <div class="flex gap" style="margin-top:12px">
-            <button class="brkbtn primary" id="jwt-run">[ inspect token ]</button>
-            <button class="brkbtn" id="jwt-clear">[ clear ]</button>
+            <button class="brkbtn primary" id="jwt-run">inspect token</button>
+            <button class="brkbtn" id="jwt-clear">clear</button>
           </div>
         </div>
 

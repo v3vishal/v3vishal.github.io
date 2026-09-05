@@ -151,7 +151,7 @@ App.password = (() => {
         <h1 class="view-title">// password lab</h1>
         <div class="view-meta">engine: zxcvbn-style + rockyou-top10k · csprng generation</div>
         <div class="view-actions">
-          <button class="brkbtn" id="pw-deep-scan">[ deep scan ]</button>
+          <button class="brkbtn" id="pw-deep-scan">deep scan</button>
         </div>
       </div>
 
@@ -166,7 +166,7 @@ App.password = (() => {
             <label class="field-label" for="pw-input">password</label>
             <div class="input-row">
               <input class="input" type="password" id="pw-input" placeholder="type or paste a candidate" autocomplete="off" spellcheck="false">
-              <button class="brkbtn" id="pw-reveal">[ ◑ ]</button>
+              <button class="brkbtn" id="pw-reveal">◑</button>
             </div>
           </div>
 
@@ -261,10 +261,10 @@ App.password = (() => {
 
             <div class="input-row">
               <input class="input" id="gen-out" readonly placeholder="press generate">
-              <button class="brkbtn" id="gen-copy">[ copy ]</button>
+              <button class="brkbtn" id="gen-copy">copy</button>
             </div>
             <div style="height:8px"></div>
-            <button class="brkbtn primary block" id="gen-go">[ generate ]</button>
+            <button class="brkbtn primary block" id="gen-go">generate</button>
           </div>
         </div>
       </div>

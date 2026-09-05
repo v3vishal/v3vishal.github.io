@@ -131,7 +131,7 @@ App.steganography = (() => {
             </div>
             <div class="muted" style="font-size:11px" id="hide-cap">capacity: load an image</div>
             <div style="height:10px"></div>
-            <button class="brkbtn primary block" id="hide-go">[ embed + download PNG ]</button>
+            <button class="brkbtn primary block" id="hide-go">embed + download PNG</button>
           </div>
 
           <div class="panel">
@@ -160,7 +160,7 @@ App.steganography = (() => {
               <input type="file" id="ext-file" accept="image/*" hidden>
             </div>
             <div style="height:10px"></div>
-            <button class="brkbtn primary block" id="ext-go" disabled>[ extract ]</button>
+            <button class="brkbtn primary block" id="ext-go" disabled>extract</button>
           </div>
 
           <div class="panel">
