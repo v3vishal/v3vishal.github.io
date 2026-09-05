@@ -8,7 +8,7 @@ App.reports = (() => {
 
   const KIND_LABEL = {
     encrypt: 'encrypt', pwd: 'pwd', hash: 'hash',
-    threat: 'threat', steg: 'steg', net: 'net'
+    threat: 'threat', steg: 'steg', net: 'net', phish: 'phish'
   };
 
   const load = () => {
@@ -32,8 +32,8 @@ App.reports = (() => {
           <h2>filter</h2>
           <span class="panel-state" id="rep-count">0 events</span>
         </header>
-        <div class="flex gap" id="rep-filters">
-          ${['all','encrypt','pwd','hash','threat','steg','net'].map(k =>
+        <div class="flex gap" id="rep-filters" style="flex-wrap:wrap;">
+          ${['all','encrypt','pwd','hash','threat','phish','steg','net'].map(k =>
             `<button class="brkbtn ${k==='all'?'primary':''}" data-filter="${k}">[ ${k} ]</button>`
           ).join('')}
         </div>

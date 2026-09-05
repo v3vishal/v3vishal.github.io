@@ -45,7 +45,7 @@ App.log = (() => {
   const all = () => entries.slice();
 
   const countByKind = () => {
-    const c = { encrypt: 0, pwd: 0, hash: 0, threat: 0, steg: 0, net: 0 };
+    const c = { encrypt: 0, pwd: 0, hash: 0, threat: 0, steg: 0, net: 0, phish: 0 };
     for (const e of entries) if (c[e.kind] != null) c[e.kind]++;
     return c;
   };
@@ -79,7 +79,7 @@ App.log = (() => {
     const now = Date.now();
     const span = hours * 3600 * 1000;
     const buckets = {};
-    ['encrypt','pwd','hash','threat','steg'].forEach(k => buckets[k] = new Array(cells).fill(0));
+    ['encrypt','pwd','hash','threat','phish','steg'].forEach(k => buckets[k] = new Array(cells).fill(0));
     for (const e of entries) {
       const age = now - e.ts;
       if (age < 0 || age > span) continue;

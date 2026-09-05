@@ -50,7 +50,7 @@
     <link rel="preload" href="fonts/schibsted-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="fonts/fragment-mono-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-    <link rel="stylesheet" href="style.css?v=78539f20">
+    <link rel="stylesheet" href="style.css?v=f74471cc">
 </head>
 <body data-station="home">
 
@@ -169,6 +169,24 @@
                 <p class="project__links">
                     <a href="/projects/crypt/">Case study&nbsp;→</a>
                     <span class="project__soon">code coming soon</span>
+                </p>
+            </article>
+
+            <article class="project" data-track="security ai" data-reveal>
+                <p class="marginalia" aria-hidden="true">// fine-tuned on scams.<br>runs in your tab, zero leaks.</p>
+                <div class="project__head">
+                    <h3 class="project__name">Phish</h3>
+                    <p class="project__meta"><svg class="thread thread--both" viewBox="0 0 14 8" width="14" height="8" aria-hidden="true"><path class="mark__ai" d="M1 2 C 5 2, 9 6, 13 6"/><path class="mark__sec-halo" d="M1 6 C 5 6, 9 2, 13 2"/><path class="mark__sec" d="M1 6 C 5 6, 9 2, 13 2"/></svg>v0.1 · live demo</p>
+                </div>
+                <p class="project__desc">
+                    In-browser smishing and scam message detector. Runs a fine-tuned DistilBERT ONNX
+                    safetensors model locally in WebAssembly, paired with SMS screenshot OCR and
+                    sender-header verification to expose phishing without exposing private messages.
+                </p>
+                <p class="project__links">
+                    <a href="/projects/phish/">Case study&nbsp;→</a>
+                    <a href="https://huggingface.co/v3vishal/phish-v0.1" rel="noopener">Hugging Face&nbsp;↗</a>
+                    <a href="/projects/crypt/app/index.html#phish">Interactive App&nbsp;↗</a>
                 </p>
             </article>
         </section>
@@ -333,6 +351,6 @@
 
     <!-- The site-map and terminal panels are injected by script.js on every
          page — they are interactive-only features, so they live in one place. -->
-    <script src="script.js?v=a0589002"></script>
+    <script src="script.js?v=c87de261"></script>
 </body>
 </html>

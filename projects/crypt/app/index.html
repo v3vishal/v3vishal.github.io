@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=VT323&family=Major+Mono+Display&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=f74471cc">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
 <body>
@@ -40,7 +40,7 @@
                 <span class="threat-label" id="threat-label">LOW</span>
             </div>
             <div class="topbar-cell actions">
-                <a class="iconbtn" href="../../index.html" title="Back to Portfolio">[ ↩ ]</a>
+                <a class="iconbtn" href="/" title="Back to Portfolio">[ ↩ ]</a>
                 <button class="iconbtn" id="theme-toggle" title="Toggle theme">[ ◐ ]</button>
                 <button class="iconbtn" id="mobile-nav-btn" title="Menu">[ ≡ ]</button>
             </div>
@@ -78,6 +78,15 @@
                         </a>
                         <a href="#network" class="navitem" data-tool="network">
                             <span class="nav-glyph">▸</span><span class="nav-key">07</span><span class="nav-name">net forensics</span>
+                        </a>
+                    </nav>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-heading">├─ AI DEFENSE ───────┤</div>
+                    <nav>
+                        <a href="#phish" class="navitem" data-tool="phish">
+                            <span class="nav-glyph">▸</span><span class="nav-key">12</span><span class="nav-name">phish detector</span>
                         </a>
                     </nav>
                 </div>
@@ -170,6 +179,7 @@
                                 <div><dt>hash inspections</dt><dd id="ctr-hash">0000</dd></div>
                                 <div><dt>threat simulations</dt><dd id="ctr-threat">0000</dd></div>
                                 <div><dt>steg ops</dt><dd id="ctr-steg">0000</dd></div>
+                                <div><dt>phish scans</dt><dd id="ctr-phish">0000</dd></div>
                                 <div><dt>last op</dt><dd id="ctr-last">—</dd></div>
                             </dl>
                         </article>
@@ -185,6 +195,7 @@
  pwd   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0
  hash  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0
  thrt  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0
+ phsh  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0
  steg  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  0
                             </pre>
                         </article>
@@ -213,6 +224,7 @@
                 <section id="settings-view" class="view"></section>
                 <section id="jwt-view" class="view"></section>
                 <section id="ctf-view" class="view"></section>
+                <section id="phish-view" class="view"></section>
 
             </main>
         </div>
@@ -256,6 +268,7 @@
     <script src="js/modules/settings.js"></script>
     <script src="js/modules/jwt.js"></script>
     <script src="js/modules/ctf.js"></script>
+    <script src="js/modules/phish.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

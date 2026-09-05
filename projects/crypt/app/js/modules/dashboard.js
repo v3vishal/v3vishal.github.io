@@ -53,6 +53,14 @@ App.dashboard = (() => {
       else flags.push({ type: 'good', msg: `last header audit: ${p}% posture` });
     }
 
+    // 8. Phishing & Smishing scans
+    const phishEv = events.find(e => e.kind === 'phish');
+    if (phishEv) {
+      if (phishEv.meta?.verdict === 'scam') flags.push({ type: 'bad', msg: `phishing detected: ${phishEv.meta?.score || 0}% scam risk` });
+      else if (phishEv.meta?.verdict === 'suspicious') flags.push({ type: 'warn', msg: `suspicious message flagged: ${phishEv.meta?.score || 0}% risk` });
+      else flags.push({ type: 'good', msg: 'clean message verified (safe)' });
+    }
+
     // Numeric score: weighted sum
     let score = 65;
     for (const f of flags) {
@@ -116,6 +124,8 @@ App.dashboard = (() => {
     $('#ctr-hash').textContent    = String(counts.hash).padStart(4, '0');
     $('#ctr-threat').textContent  = String(counts.threat).padStart(4, '0');
     $('#ctr-steg').textContent    = String(counts.steg).padStart(4, '0');
+    const ctrPhish = $('#ctr-phish');
+    if (ctrPhish) ctrPhish.textContent = String(counts.phish || 0).padStart(4, '0');
     $('#ctr-last').textContent    = last ? fmtAgo(last.ts) : '—';
 
     // Sidebar telemetry
@@ -127,11 +137,12 @@ App.dashboard = (() => {
     // Spark
     const buckets = App.log.bucketize(24, 32);
     const lines = [
-      [' enc  ', buckets.encrypt],
-      [' pwd  ', buckets.pwd],
-      [' hash ', buckets.hash],
-      [' thrt ', buckets.threat],
-      [' steg ', buckets.steg],
+      [' enc  ', buckets.encrypt || []],
+      [' pwd  ', buckets.pwd || []],
+      [' hash ', buckets.hash || []],
+      [' thrt ', buckets.threat || []],
+      [' phsh ', buckets.phish || []],
+      [' steg ', buckets.steg || []],
     ];
     const out = lines.map(([label, arr]) => {
       const max = Math.max(1, ...arr);

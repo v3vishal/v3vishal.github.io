@@ -218,6 +218,11 @@ body[data-track-active="ai"] .mark__ai  { stroke: var(--security); }
 }
 .thread--security { color: var(--security); }
 .thread--ai       { color: var(--ai); }
+.thread--both .mark__ai       { stroke: var(--ai); }
+.thread--both .mark__sec-halo { stroke: var(--paper); stroke-width: 4.8; }
+.thread--both .mark__sec      { stroke: var(--security); }
+body[data-track-active="ai"] .thread--both .mark__sec { stroke: var(--ai); }
+body[data-track-active="ai"] .thread--both .mark__ai  { stroke: var(--security); }
 
 /* ---------- ambient depth (the "morphism", kept quiet) ---------- */
 .ambient {
@@ -1086,8 +1091,9 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
     stroke-width: 3;
     transition: stroke-width 0.2s ease;
 }
-.sitemap__stop--sec { stroke: var(--security); }
-.sitemap__stop--ai  { stroke: var(--ai); }
+.sitemap__stop--sec  { stroke: var(--security); }
+.sitemap__stop--ai   { stroke: var(--ai); }
+.sitemap__stop--both { stroke: url(#interchangeGrad); stroke-width: 3.5; }
 .sitemap__label {
     font-family: var(--f-mono);
     font-size: 10.5px;
@@ -1238,6 +1244,7 @@ body[data-track-active="ai"]       [data-track]:not([data-track~="ai"]) {
        untouched. */
     .sitemap__station[data-station="crypt"] .sitemap__label { text-anchor: start; }
     .sitemap__station[data-station="agri-fincaster"] .sitemap__label { text-anchor: end; }
+    .sitemap__station[data-station="phish"] .sitemap__label { text-anchor: end; }
     .sitemap__station[data-station="monie"] .sitemap__label { text-anchor: end; }
     .sitemap__station[data-station="contact"] .sitemap__label { text-anchor: end; }
 }

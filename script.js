@@ -259,6 +259,7 @@
         { id: 'projects',       href: '/#projects',                 label: 'projects',       lines: 'sec ai', x: 238, pill: [230, 50, 16, 108], labelPos: [238, 196, 'middle'] },
         { id: 'crypt',          href: '/projects/crypt/',           label: 'crypt',          lines: 'sec',    x: 310, stop: [310, 61, 'sec'],   labelPos: [310, 44, 'middle'] },
         { id: 'agri-fincaster', href: '/projects/agri-fincaster/',  label: 'agri-fincaster', lines: 'ai',     x: 292, stop: [292, 150, 'ai'],   labelPos: [292, 172, 'middle'] },
+        { id: 'phish',          href: '/projects/phish/',           label: 'phish',          lines: 'sec ai', x: 368, stop: [368, 62, 'both'],  labelPos: [368, 80, 'middle'] },
         { id: 'monie',          href: '/projects/monie/',           label: 'monie',          lines: 'ai',     x: 386, stop: [386, 145, 'ai'],   labelPos: [386, 167, 'middle'] },
         { id: 'writeups',       href: '/blog/',                     label: 'writeups',       lines: 'branch', x: 416, stop: [416, 28, 'sec'],  labelPos: [428, 12, 'start'] },
         { id: 'contact',        href: '/#contact',                  label: 'contact',        lines: 'sec ai', x: 468, dot: [468, 100], interchange: true, labelPos: [468, 128, 'middle'] }
@@ -602,6 +603,12 @@
                 tint: 't-sec',
                 line: 'Python security toolkit — encryption, password-strength analysis, educational cracking sims. Stable.',
                 page: '/projects/crypt/'
+            },
+            'phish': {
+                tint: 't-sec',
+                line: 'Browser AI smishing detector — DistilBERT ONNX safetensors, screenshot OCR, multi-point verification. Live demo.',
+                page: '/projects/phish/',
+                repo: 'https://huggingface.co/v3vishal/phish-v0.1'
             }
         };
 

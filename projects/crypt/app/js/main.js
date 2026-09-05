@@ -1,6 +1,6 @@
 // crypt // sec-ops — entrypoint + router
 (() => {
-  const TOOLS = ['dashboard','encryption','password','hash','threat','steganography','network','reports','settings','jwt','ctf'];
+  const TOOLS = ['dashboard','encryption','password','hash','threat','steganography','network','reports','settings','jwt','ctf','phish'];
   let currentTool = null;
   const startTime = Date.now();
 
